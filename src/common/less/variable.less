@@ -1,0 +1,13 @@
+// 定义变量 函数
+.border(@a:10px,@b:50px,@c:30px,@color:#000){
+    border:solid 1px @color;
+    box-shadow: @arguments;//指代的是 全部参数
+}
+#main{
+    .border(0px,5px,30px,red);//必须带着单位
+}
+
+// 计算宽高
+.height(@h:10px){
+  height:calc((@h/2px)/37.5px);
+}
