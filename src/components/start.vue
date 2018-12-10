@@ -8,7 +8,7 @@
         <a href="#"></a>
         <img src="../assets/img/happyIdiom/happyIdiom-main-return.png" />
       </div>
-      <div class="Rankinglist">
+      <div class="Rankinglist" v-on:click="jumpToGameRecord">
         <img src="../assets/img/happyIdiom/happyIdiom-start-ranking.png" />
       </div>
     </div>
@@ -19,9 +19,9 @@
       <img class="btn easyBtn" src="../assets/img/happyIdiom/happyIdiom-start-easy.png" @click="jumpToMainApp(1)"/>
       <img class="btn commonBtn" src="../assets/img/happyIdiom/happyIdiom-start-ordinary.png" @click="jumpToMainApp(2)"/>
       <img class="btn difficultBtn" src="../assets/img/happyIdiom/happyIdiom-start-difficult.png" @click="jumpToMainApp(3)"/>
-      <img class="btn pkBtn" src="../assets/img/happyIdiom/happyIdiom-start-pk.png" />
+      <img class="btn pkBtn" src="../assets/img/happyIdiom/happyIdiom-start-pk.png" @click="jumpToFriendsPK"/>
     </div>
-    <div class="bottomButton">
+    <div class="bottomButton" v-on:click="jumpToRankingList">
       <img class="btnBot" src="../assets/img/happyIdiom/happyIdiom-start.png" />
     </div>
 
@@ -47,6 +47,21 @@ export default {
             spellLevel: n
           }
         });
+     },
+     jumpToGameRecord() {
+        this.$router.push({
+            name:'gameRecord'
+          });
+     },
+     jumpToRankingList() {
+      this.$router.push({
+        name:'rankingList'
+      });
+     },
+     jumpToFriendsPK() {
+      this.$router.push({
+        name:'friendsPK'
+      });
      }
   }
 }

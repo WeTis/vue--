@@ -3,6 +3,10 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import start from './components/start'
 import mainApp from './components/mainApp'
+import gameRecord from './components/gameRecord'
+import rankingList from './components/rankingList'
+import friendsPK from './components/friendsPK'
+
 
 Vue.config.productionTip = false
 
@@ -19,6 +23,21 @@ const router = new VueRouter({
       path: '/mainApp',
       name: 'mainApp',
       component: mainApp
+    },
+    {
+      path: '/gameRecord',
+      name: 'gameRecord',
+      component: gameRecord
+    },
+    {
+      path: '/rankingList',
+      name: 'rankingList',
+      component: rankingList
+    },
+    {
+      path: '/friendsPK',
+      name: 'friendsPK',
+      component: friendsPK
     }
   ]
 })

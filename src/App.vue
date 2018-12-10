@@ -15,7 +15,7 @@ export default {
 <style lang="scss">
 html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,blockquote,pre,hr,figure,table,caption,th,td,form,fieldset,legend,input,button,textarea,menu{margin:0;padding:0;}
 html,body,form,fieldset,p,div,h1,h2,h3,h4,h5,h6{-webkit-text-size-adjust:none}
-html{font-size:37.5px;}
+html{font-size:37.5px;background-color: #ffffff;}
 body{font-family:"微软雅黑",arial,sans-serif; background:#e6e6e6;}
 header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{display:block;}
 table{border-collapse:collapse;border-spacing:0;}
