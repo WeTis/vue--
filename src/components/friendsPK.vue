@@ -5,7 +5,7 @@
                 <img src="../assets/img/happyIdiom/happyIdiom_rankingList-return.png" />
             </div>
             <div class="title">好友PK</div>
-            <div class="add">添加</div>
+            <div class="add" v-on:click="jumpToAddFriend">添加</div>
         </div>
         <div class="topPKNav">
             <div class="active">简单</div>
@@ -31,7 +31,7 @@
                             <div class="center">vs</div>
                             <div class="right">
                                 <img src="" class="headImg"/>
-                                <div class="btn startBtn">开始</div>
+                                <div class="btn startBtn" v-on:click="clickStart">开始</div>
                             </div>
                         </div>
                     </li>
@@ -72,12 +72,22 @@ export default {
             name:'start'
           });
         },
+        jumpToAddFriend(){
+          this.$router.push({
+            name:'addFriend'
+          });
+        },
+        clickStart() {
+          console.log("低价");
+        },
         loadData() {
           // this.data = res.data.concat(this.data)
+          console.log("进入pk页面");
           this.$nextTick(() => {
             if (!this.scroll) {
               this.scroll = new Bscroll(this.$refs.wrapper, {
                 scrollY: true,
+                click: true,
                 pullDownRefresh: {
                   threshold: 50,
                   stop: 50

@@ -10,7 +10,7 @@
             <div class="title">奖励记录</div>
         </div>
         <div class="gameRecordList">
-            <div class="item">
+            <div class="item" v-for="item in 10">
                 <div class="headImg">
                     <img src="../assets/img/happyIdiom/happyIdiom-record-j.png" />
                     <div class="type">简单模式</div>

@@ -36,7 +36,7 @@ body,textarea,input,button,select,keygen,legend{color:#333;outline:0;}
 body *{-webkit-tap-highlight-color:rgba(0,0,0,0);tap-highlight-color:rgba(0,0,0,0);font-size: 0;}
 .clearfix:after{content:".";display:block;overflow:hidden;height:0;clear:both;visibility:hidden;}
 * html .clearfix{height:1%;}
-input,textarea,select{outline: none; -webkit-appearance:none;}
+input,textarea,select{outline: none; -webkit-appearance:none;border: none;}
 .clearOver{overflow: hidden; text-overflow:ellipsis; white-space: nowrap;}
 
 /*公共样式*/
