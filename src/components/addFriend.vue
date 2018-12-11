@@ -60,11 +60,19 @@ $color : red;
 @function rem($n) {
     @return $n/2/37.5;
 }
+#addFriend{
+    position: fixed;
+    top: 0;
+    bottom:0;
+    width: 100%;
+    -webkit-overflow-scrolling:touch;
+}
 .topNav{
     width: 100%;
     height: rem(95rem);
     background-color: #333333;
     position: relative;
+    overflow: hidden;
     .returnBtn{
         position:absolute;
         top: 0;
@@ -115,8 +123,8 @@ $color : red;
         }
         input{
             flex:1;
-            height: rem(70rem);
-            line-height: rem(70rem);
+            height: rem(40rem);
+            line-height: rem(40rem);
             text-indent: rem(14rem);
             font-size: rem(28rem);
             color: #000000;
@@ -138,10 +146,11 @@ $color : red;
     }
 }
 .friendsList{
-    position: fixed;
+    position: absolute;
     top: rem(225rem);
     bottom: 0;
-    overflow: auto;
+    overflow: scroll;
+    -webkit-overflow-scrolling:touch;
     width: 100%;
     background-color: #F3F3F3;
     ul,li{

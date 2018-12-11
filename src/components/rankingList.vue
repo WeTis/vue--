@@ -72,7 +72,13 @@ $color : red;
   @return $n/2/37.5;
 }
 #rankingList{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100%;
   background-color: #ffffff;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 .topNav{
   width: 100%;
@@ -146,7 +152,7 @@ $color : red;
   }
 }
 .rangkingList{
-  position:fixed;
+  position:absolute;
   width: rem(690rem);
   padding-top: rem(40rem);
   padding-bottom:rem(25rem);
@@ -189,16 +195,17 @@ $color : red;
   .listS{
     position: absolute;
     bottom: 0;
-    top: rem(130rem);
+    top: rem(170rem);
     width: 100%;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .list{
     position:relative;
     height: rem(120rem);
     width: rem(660rem);
     margin: 0 auto;
-    margin-top: rem(40rem);
+    margin-bottom: rem(40rem);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;

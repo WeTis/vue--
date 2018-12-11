@@ -77,6 +77,9 @@ $color : red;
   width: 100%;
   top: 0;
   bottom: 0;
+  padding-bottom: 100px;
+  // margin-bottom: -100px;
+
 }
 .startTop{
   padding-top: rem(29rem);

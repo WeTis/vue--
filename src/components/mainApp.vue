@@ -84,6 +84,9 @@
 
 <script>
 import $ from 'jquery';
+import {Api} from '../api/api.js'
+
+const api = new Api();
 
 export default {
   name: 'mianApp',
@@ -105,17 +108,40 @@ export default {
   },
   created(){
       this.judgeLevel();
-      this.setData("职鸿独平若往身惊直叙以独殉翩铺来");
+      this.setData("职鸿独平若往身惊直叙以独殉翩铺来职鸿独平若往身惊职鸿独平若往身惊直叙以独");
       this.setDataTrue();
-      for(let i = 0; i < 4; i++){
+      for(let i = 0; i < 9; i++){
         this.idiomText.set(i+1,[]);
       }
+      this.getData();
       console.log(this.idiomText);
       console.log(this.idiomText.size);
   },
   methods: {
     getData() {
+       
+       api.getGameData(1).then((res) => {
+        console.log(res);
+       }).catch(()=>{console.log(5555)});
 
+
+       // $.ajax({
+       //  url: "/api/customerIndex/game/idiom/studentStartGame",
+       //  headers: {
+       //    Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMTIiLCJjcmVhdGVkIjoxNTQ0MDg1MjMyOTUwLCJzY29wZSI6bnVsbCwiaXNzIjoiY3VzdG9tZXJfc3R1ZGVudF9hcHAiLCJleHAiOjE1NDY2NzcyMzIsIm5vbmNlU3RyIjoiaDJhMWo0MmpsZHFuYXJ1NiJ9.WGKQNhcUCnubHz9wAR5TvQEov-fPD022Eh9__JW8jzA3XdTgLkk5i1wIZxvAkhbGCT92DnnGMw5DWFWhhJZvqg"
+       //  },
+       //  type:"POST",
+       //  data:{
+       //    difficultyLevel:1
+       //  },
+       //  dataType: "json",
+       //  success: (res) => {
+       //    console.log(res);
+       //  },
+       //  fail: (err) => {
+       //    console.log(err);
+       //  }
+       // })
     },
     setData(string){
       let arr = string.split("");
@@ -176,6 +202,11 @@ export default {
       this.idiomTrueArry.add("平铺直叙");
       this.idiomTrueArry.add("翩若惊鸿");
       this.idiomTrueArry.add("以身殉职");
+      this.idiomTrueArry.add("翩若惊鸿");
+      this.idiomTrueArry.add("以身殉职");
+      this.idiomTrueArry.add("以身殉职");
+      this.idiomTrueArry.add("翩若惊鸿");
+      this.idiomTrueArry.add("以身殉职");
     },
     returnStart(){
       // 弹出退出弹框
@@ -227,10 +258,13 @@ export default {
         if(this.idiomIsTure(this.idiomText.get(this.fillInBoxIndex))){
           // 正确
           console.log("yes");
+
+          // item.clickIndex = this.clickIndex;
           this.idiomNum.fill({isTrue: true,isFasle: false},this.fillInBoxIndex-1,this.fillInBoxIndex);
           this.fillInBoxIndex +=1; 
           this.clickFasle(1);
           this.clearBoxShaw(1);
+          this.clickIndex = 0;
           // this.idiomText.get(this.fillInBoxIndex).push(item.text);
           // this.idiomText.set(this.fillInBoxIndex,this.idiomText.get(this.fillInBoxIndex));
         }else{
@@ -322,6 +356,7 @@ $color : red;
   bottom: 0;
   left: 0;
   overflow: auto;
+   -webkit-overflow-scrolling:touch;
 }
 .topNav{
   width: 100%;
@@ -490,6 +525,7 @@ $color : red;
   flex-direction: row;
   flex-wrap: wrap;
   margin: 0 auto;
+  margin-bottom: rem(30rem);
   justify-content: space-around;
   .resultsItem{
     width: rem(207rem);

@@ -1,5 +1,7 @@
 module.exports = {
-	baseUrl: '/',
+	baseUrl: './',
+	outputDir: 'dist',
+	assetsDir: '',
 	devServer: {
 		port:8989,
 		proxy: {

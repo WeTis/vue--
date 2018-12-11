@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import FastClick from 'fastclick'
 import App from './App.vue'
+import load from './components/load'
 import start from './components/start'
 import mainApp from './components/mainApp'
 import gameRecord from './components/gameRecord'
@@ -10,10 +12,16 @@ import addFriend from './components/addFriend'
 
 Vue.config.productionTip = false
 
+FastClick.attach(document.body);
 Vue.use(VueRouter);
 
 const router = new VueRouter({
   routes: [
+    {
+      path: '/load',
+      name: 'load',
+      component: load
+    },
     {
       path: '/start',
       name: 'start',
@@ -51,10 +59,15 @@ const router = new VueRouter({
 new Vue({
   render: h => h(App),
   router,
+   data () {
+    return {
+    }
+  },
   created(){
-    this.$router.push('/start');
+    this.$router.push('/load');
     this.compterHtmlSize();
     this.listenScreenZoom();
+    
   },
   methods: {
     compterHtmlSize(){
@@ -69,6 +82,7 @@ new Vue({
         scale = scale*(scale/scaleH);
       }
       document.documentElement.style.fontSize = scale/10 + 'px';
+
     },
     listenScreenZoom(){
       window.onresize=() => {  

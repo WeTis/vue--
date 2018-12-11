@@ -1,14 +1,46 @@
 <template>
-  <div id="app">
+  <div id="app" class="wrapperS" ref="wrapperS">
+    <!-- 干啥沙发舒服哈咖啡暗示法哈萨克发哈是开发哈萨克发哈是开发还是法师法师开发部署FFH开发HKFKFH开发F发返回FEF而非FJoFH播放，C, -->
     <!-- <Start></Start> -->
-    <router-view></router-view>
+    <div class="content">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
+import $ from 'jquery';
+import Bscroll from 'better-scroll'
 
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+    
+    }
+  },
+  created() {
+        // this.loadData()
+        
+    },
+    methods:{
+   loadData() {
+          // this.data = res.data.concat(this.data)
+          console.log("进入pk页面");
+          this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new Bscroll(this.$refs.wrapperS, {
+                scrollY: true,
+                click: true,
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
+       
+      }
+    
+  }
 }
 </script>
 
@@ -52,5 +84,27 @@ input,textarea,select{outline: none; -webkit-appearance:none;border: none;}
     width: 100%;
     height: 100%;
   }
+}
+body{
+  -webkit-overflow-scrolling:touch;
+width: 100%;
+overflow: hidden;
+}
+html{
+  width: 100%;
+  overflow: hidden;
+}
+#app{
+  // position: fixed;
+  // top: 0;
+  // bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+  overflow: hidden;
+  // .content{
+  //   width: 100%;
+  //   height: 100%;
+  // }
 }
 </style>
