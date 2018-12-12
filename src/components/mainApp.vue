@@ -125,7 +125,6 @@ export default {
   created(){
       this.judgeLevel();  // 判断等级
       this.getData();   // 获取数据
-      
   },
   methods: {
     getData() {
