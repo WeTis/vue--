@@ -25,7 +25,7 @@
           </div>
       </div>
     </div>
-    <div class="time" >00:30</div>
+    <div class="time" >00:{{time}}</div>
     <div class="resultsBox" v-bind:class="{resultsBox6: idiomNum.length > 4}">
       <div class="resultsItem"  v-for="(item,index) in idiomNum">
         <img src="../assets/img/happyIdiom/happyIdiom_filltext-box.png" class="resultsBg" />
@@ -47,23 +47,23 @@
       </div>
     </div>
     <!-- 游戏失败弹框 -->
-    <div class="GameOver elasticFrameShaw">
+    <div class="GameOver elasticFrameShaw" v-show="gameOverShow">
       <div class="elasticFrame">
         <img src="../assets/img/happyIdiom/idiom-failure.png" />
         <div class="buttonBottom">
-          <img src="../assets/img/happyIdiom/idiom-failure-daan.png"/>
-          <img src="../assets/img/happyIdiom/idiom-failure-con1.png" />
+          <img src="../assets/img/happyIdiom/idiom-failure-daan.png" v-on:click="clickShowExplainList"/>
+          <img src="../assets/img/happyIdiom/idiom-failure-con1.png" v-on:click="rePlayGame" />
           <img src="../assets/img/happyIdiom/idiom-failure-end.png" />
         </div>
       </div>
     </div>
     <!-- 游戏成功 -->
-    <div class="GameSuccess elasticFrameShaw">
+    <div class="GameSuccess elasticFrameShaw" v-show="gameSuccessShow">
       <div class="elasticFrame">
         <img src="../assets/img/happyIdiom/happyIdiom_customs.png" />
         <div class="buttonBottom">
           <img src="../assets/img/happyIdiom/happyIdiom_sucess_return.png"/>
-          <img src="../assets/img/happyIdiom/happyIdiom_view.png" />
+          <img src="../assets/img/happyIdiom/happyIdiom_view.png" v-on:click="clickShowExplainList" />
           <img src="../assets/img/happyIdiom/happyIdiom_next_customs.png" />
         </div>
       </div>
@@ -81,9 +81,9 @@
     </div>
 
     <!-- 单词解释 -->
-    <div class="explainList" v-show="false">
+    <div class="explainList" v-show="explainListShow">
        <img class="explainListBg" src="../assets/img/happyIdiom/happyIdiom-start-bg.png" />
-       <div class="return radiusBtn" v-on:click="returnStart">
+       <div class="return radiusBtn" v-on:click="returnMian">
         <img src="../assets/img/happyIdiom/happyIdiom-main-return.png" />
        </div>
        <div class="list">
@@ -119,7 +119,13 @@ export default {
       clickIndex: 0,
       isShowAnmate: false,
       exit: false,
-      idiomList: []
+      idiomList: [],
+      time: 40,
+      timer: null, // 停止计时
+      gameOverShow: false,
+      gameSuccessShow: false,
+      explainListShow: false,
+      trueNum: 0,  // 正确数量
     }
   },
   created(){
@@ -132,6 +138,7 @@ export default {
        .then((res) => {
         let data = res.params
         this.setData(data.idiomCharArray);
+        this.time = data.limitTime;
         // 设置输入框
         let len = data.idiomCount;
         for(let i = 0; i < len; i++){
@@ -149,14 +156,22 @@ export default {
     },
     setData(string){
       let arr = string.split("");
+      let allArr = [];
+      
       for(let i = 0; i < arr.length; i++){
-        this.textArry.push({
+        allArr.push({
           text: arr[i],
           index: i+1,
           clickIndex:0,
           isClick: false,
           isClear: false
         });
+        console.log("循环中");
+        if(i == arr.length-1){
+          console.log("循环完成");
+          this.textArry.push(...allArr);
+          this.countdown();
+        }
       }
     },
     setDataTrue(arr){
@@ -214,15 +229,13 @@ export default {
         if(this.idiomIsTure(this.idiomText.get(this.fillInBoxIndex))){
           // 正确
           console.log("yes");
-
-          // item.clickIndex = this.clickIndex;
+          this.trueNum++;
           this.idiomNum.fill({isTrue: true,isFasle: false},this.fillInBoxIndex-1,this.fillInBoxIndex);
           this.fillInBoxIndex +=1; 
           this.clickFasle(1);
           this.clearBoxShaw(1);
           this.clickIndex = 0;
-          // this.idiomText.get(this.fillInBoxIndex).push(item.text);
-          // this.idiomText.set(this.fillInBoxIndex,this.idiomText.get(this.fillInBoxIndex));
+
         }else{
           // 错误
           console.log("no");
@@ -287,6 +300,47 @@ export default {
     },
     cancelExit(){
       this.exit = false;
+    },
+    countdown(){
+      this.timer = setInterval(() => {
+        this.time = this.time -1;
+        if(this.time == 0){
+          clearInterval(this.timer);
+        }
+      },1000);
+    },
+    clickShowExplainList(){
+      this.explainListShow = true;
+    },
+    returnMian() {
+      this.explainListShow = false;
+    },
+    rePlayGame() {
+      this.$router.push({
+          name:'mainApp',
+          params: {
+            spellLevel: this.$route.params.spellLevel
+          }
+        });
+    },
+    claerAllData() {
+      this.idiomText.clear();
+      this.idiomTrueArry.clear();
+      
+    }
+  },
+  watch:{
+    time(val,oldVal) {
+      console.log(val,oldVal);
+      if(val == 0){
+        this.gameOverShow = true;
+      }
+    },
+    trueNum(val,oldVal) {
+      if(val == 4){
+        clearInterval(this.timer);
+        this.gameSuccessShow = true;
+      }
     }
   }
   
@@ -532,7 +586,6 @@ $color : red;
   /*display: none;*/
 }
 .GameOver{
-  display: none;
   .elasticFrame{
     &>img{
       width: rem(650rem);
@@ -548,7 +601,6 @@ $color : red;
   }
 }
 .GameSuccess{
-  display: none;
   .elasticFrame{
     &>img{
       width: rem(650rem);
