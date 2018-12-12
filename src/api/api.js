@@ -50,7 +50,6 @@ class Api extends Base {
       url: "/customerIndex/game/idiom/getNextIdiomList",
       data: {},
     }
-
     return this.request(param);
   }
   

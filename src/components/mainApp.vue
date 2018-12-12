@@ -64,7 +64,7 @@
         <div class="buttonBottom">
           <img src="../assets/img/happyIdiom/happyIdiom_sucess_return.png"/>
           <img src="../assets/img/happyIdiom/happyIdiom_view.png" v-on:click="clickShowExplainList" />
-          <img src="../assets/img/happyIdiom/happyIdiom_next_customs.png" />
+          <img src="../assets/img/happyIdiom/happyIdiom_next_customs.png" v-on:click="clickIntoNext" />
         </div>
       </div>
     </div>
@@ -126,6 +126,7 @@ export default {
       gameSuccessShow: false,
       explainListShow: false,
       trueNum: 0,  // 正确数量
+      nextData: {},  // 下一关数据
     }
   },
   created(){
@@ -316,17 +317,41 @@ export default {
       this.explainListShow = false;
     },
     rePlayGame() {
-      this.$router.push({
-          name:'mainApp',
-          params: {
-            spellLevel: this.$route.params.spellLevel
-          }
-        });
+      // 再来一局
+      this.claerAllData();   // 重置data中的数据
+      this.judgeLevel();  // 判断等级
+      this.getData();   // 获取数据
+    },
+    clickIntoNext() {
+      // 下一关
+      this.claerAllData();   // 重置data中的数据
+      this.judgeLevel();  // 判断等级
+      this.getData();   // 获取数据
+    },
+    getNextData() {
+      api.getNextIdiomList().then((res) => {
+
+      }).catch(()=>{
+        console.log(5555)
+       });
     },
     claerAllData() {
       this.idiomText.clear();
       this.idiomTrueArry.clear();
-      
+      this.constant = true;
+      this.textArry = [];
+      this.idiomNum = [];
+      this.fillInBoxIndex = 1;  // 填入框的位置
+      this.clickIndex = 0;
+      this.isShowAnmate = false;
+      this.exit = false;
+      this.idiomList = [];
+      this.time = 40;
+      this.timer = null; // 停止计时
+      this.gameOverShow = false;
+      this.gameSuccessShow = false;
+      this.explainListShow = false;
+      this.trueNum = 0;  // 正确数量
     }
   },
   watch:{
