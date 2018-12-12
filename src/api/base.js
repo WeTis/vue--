@@ -24,7 +24,7 @@ class Base {
         data:param.data,
         dataType: "json",
         success: (res) => {
-          if(res.status == 90001){
+          if(res.status == 900000){
             resolve(res);
           }else{
             reject();

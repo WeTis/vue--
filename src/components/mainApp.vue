@@ -19,7 +19,7 @@
     <div class="content">
       <img src="../assets/img/happyIdiom/happyIdiom-main-box.png" class="contentBg" />
       <div class="items">
-          <div class="item"  @click="toggleClick(item)" v-for="item in textArry" v-bind:class="{item24: textArry.length >= 24,itemActive: item.isClick}" >
+          <div class="item"  @click="toggleClick(item)" v-for="item in textArry"  v-bind:class="{item24: textArry.length >= 24,itemActive: item.isClick}" >
             <img src="../assets/img/happyIdiom/happyIdiom-main-tian.png" class="itemBg" />
             <span class="itemText" v-show="!item.isClear">{{item.text}}</span>
           </div>
@@ -29,7 +29,7 @@
     <div class="resultsBox" v-bind:class="{resultsBox6: idiomNum.length > 4}">
       <div class="resultsItem"  v-for="(item,index) in idiomNum">
         <img src="../assets/img/happyIdiom/happyIdiom_filltext-box.png" class="resultsBg" />
-        <div class="resultsText">{{arrToString(idiomText.get(index+1))}}
+        <div class="resultsText" v-if="idiomText.get(index+1)">{{arrToString(idiomText.get(index+1))}}
           <img src="../assets/img/happyIdiom/happyIdiom-main-y.png" class="iconTrue" v-show="item.isTrue" />
           <img src="../assets/img/happyIdiom/happyIdiom-main-err.png" class="iconFlase" v-show="item.isFasle" />
         </div>
@@ -79,6 +79,21 @@
         </div>
       </div>
     </div>
+
+    <!-- 单词解释 -->
+    <div class="explainList" v-show="false">
+       <img class="explainListBg" src="../assets/img/happyIdiom/happyIdiom-start-bg.png" />
+       <div class="return radiusBtn" v-on:click="returnStart">
+        <img src="../assets/img/happyIdiom/happyIdiom-main-return.png" />
+       </div>
+       <div class="list">
+         <div v-for="item in idiomList">
+           <div class="idiomName">{{item.idiomName}}</div>
+           <div>{{item.idiomContent}}</div>
+           <div>{{item.idiomDerivation}}</div>
+         </div>
+       </div>
+    </div>
   </div>
 </template>
 
@@ -103,45 +118,35 @@ export default {
       idiomTrueArry: new Set(),
       clickIndex: 0,
       isShowAnmate: false,
-      exit: false
+      exit: false,
+      idiomList: []
     }
   },
   created(){
-      this.judgeLevel();
-      this.setData("职鸿独平若往身惊直叙以独殉翩铺来职鸿独平若往身惊职鸿独平若往身惊直叙以独");
-      this.setDataTrue();
-      for(let i = 0; i < 9; i++){
-        this.idiomText.set(i+1,[]);
-      }
-      this.getData();
-      console.log(this.idiomText);
-      console.log(this.idiomText.size);
+      this.judgeLevel();  // 判断等级
+      this.getData();   // 获取数据
+      
   },
   methods: {
     getData() {
+       api.getGameData(this.$route.params.spellLevel)
+       .then((res) => {
+        let data = res.params
+        this.setData(data.idiomCharArray);
+        // 设置输入框
+        let len = data.idiomCount;
+        for(let i = 0; i < len; i++){
+         this.idiomText.set(i+1,[]);
+        }
+        // 设置正确答案
+        this.setDataTrue(data.idiomList);
+        // 解释
+        this.idiomList.push(...data.idiomList);
+       })
+       .catch(()=>{
+        console.log(5555)
+       });
        
-       api.getGameData(1).then((res) => {
-        console.log(res);
-       }).catch(()=>{console.log(5555)});
-
-
-       // $.ajax({
-       //  url: "/api/customerIndex/game/idiom/studentStartGame",
-       //  headers: {
-       //    Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMTIiLCJjcmVhdGVkIjoxNTQ0MDg1MjMyOTUwLCJzY29wZSI6bnVsbCwiaXNzIjoiY3VzdG9tZXJfc3R1ZGVudF9hcHAiLCJleHAiOjE1NDY2NzcyMzIsIm5vbmNlU3RyIjoiaDJhMWo0MmpsZHFuYXJ1NiJ9.WGKQNhcUCnubHz9wAR5TvQEov-fPD022Eh9__JW8jzA3XdTgLkk5i1wIZxvAkhbGCT92DnnGMw5DWFWhhJZvqg"
-       //  },
-       //  type:"POST",
-       //  data:{
-       //    difficultyLevel:1
-       //  },
-       //  dataType: "json",
-       //  success: (res) => {
-       //    console.log(res);
-       //  },
-       //  fail: (err) => {
-       //    console.log(err);
-       //  }
-       // })
     },
     setData(string){
       let arr = string.split("");
@@ -155,65 +160,17 @@ export default {
         });
       }
     },
-    setDataTrue(){
-      let arr = [
-        {
-        "id": 1187,
-        "idiomName": "独往独来",
-        "idiomSpell": "dú wǎng dú lái",
-        "idiomContent": "指行动自由，没有阻碍。又指作文用字独具一格，后指单独往来。",
-        "idiomDerivation": "《庄子·在宥》：“出入六合，游乎九州，独往独来，是谓独有。”",
-        "idiomSamples": "破八家藩篱，而自成一～文字。（清·平步青《霞外捃屑·顾黄公春秋论》）",
-        "idiomStatus": 1,
-        "createTime": 1540991832000
-        },
-        {
-        "id": 2757,
-        "idiomName": "平铺直叙",
-        "idiomSpell": "píng pū zhí xù",
-        "idiomContent": "铺：铺陈；叙：叙述。说话或写文章不加修饰，没有起伏，重点不突出。",
-        "idiomDerivation": "清·钱谦益《初学集》卷八十三：“吾读子瞻《司马温公行状》之类，平铺直序（叙），以为古今未有此体。”",
-        "idiomSamples": "这篇小说尽管大都是～，但读起来却令人潸然泪下。",
-        "idiomStatus": 1,
-        "createTime": 1540991832000
-        },
-        {
-        "id": 2761,
-        "idiomName": "翩若惊鸿",
-        "idiomSpell": "piān ruò jīng hóng",
-        "idiomContent": "比喻美女的体态轻盈。",
-        "idiomDerivation": "三国魏·曹植《洛神赋》：“（洛神）其形也，翩若惊鸿，婉若游龙。”",
-        "idiomSamples": "正在绳子忽低忽昂的走来走去，大有娇若游龙，～之势。（清·曾朴《孽海花》第六回）",
-        "idiomStatus": 1,
-        "createTime": 1540991832000
-        },
-        {
-        "id": 4663,
-        "idiomName": "以身殉职",
-        "idiomSpell": "yǐ shēn xùn zhí",
-        "idiomContent": "殉：为实现某一目标而献出生命。为忠于本职工作而献出生命。",
-        "idiomDerivation": "《孟子·尽心上》：“孟子曰：‘天下有道，以道殉身；天下无道，以身殉道；未闻以道殉乎人者也。’”",
-        "idiomSamples": "（白求恩）去年春上到延安，后来到五台山工作，不幸～。（毛泽东《纪念白求恩》）",
-        "idiomStatus": 1,
-        "createTime": 1540991832000
-        }
-      ]
-      this.idiomTrueArry.add("独往独来");
-      this.idiomTrueArry.add("平铺直叙");
-      this.idiomTrueArry.add("翩若惊鸿");
-      this.idiomTrueArry.add("以身殉职");
-      this.idiomTrueArry.add("翩若惊鸿");
-      this.idiomTrueArry.add("以身殉职");
-      this.idiomTrueArry.add("以身殉职");
-      this.idiomTrueArry.add("翩若惊鸿");
-      this.idiomTrueArry.add("以身殉职");
+    setDataTrue(arr){
+      
+      for(let i = 0; i < arr.length; i++){
+        this.idiomTrueArry.add(arr[i].idiomName);
+      }
     },
     returnStart(){
       // 弹出退出弹框
       this.exit = true;
     },
     judgeLevel() {
-      console.log(this.$route.params.spellLevel);
       let lev = this.$route.params.spellLevel;
       if(lev == 1){
         this.textNum = 16;
@@ -663,6 +620,66 @@ $color : red;
       .envel-q{
         width: rem(197rem);
         height: rem(110rem);
+      }
+    }
+  }
+}
+
+// 单词解释
+.explainList{
+  position:absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color:#ffffff;
+  .explainListBg{
+    position:absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  .return{
+    margin-top: rem(40rem);
+    margin-left: rem(20rem);
+    width: rem(106rem);
+    height: rem(94rem);
+    img{
+      display: block;
+      margin-top: rem(9rem);
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .list{
+    position:absolute;
+    width: 100%;
+    top: rem(140rem);
+    bottom: rem(20rem);
+    
+    
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    >div{
+      padding: rem(24rem);
+      width: rem(696rem);
+      box-sizing: border-box;
+      margin: 0 auto;
+      height: auto;
+      background-color: #ffbe90;
+      border-radius: rem(10rem);
+      margin-bottom: rem(15rem);
+      color: #c15708;
+      .idiomName{
+        font-size: rem(30rem);
+        font-weight: bold;
+        margin-bottom: rem(20rem);
+      }
+      >div{
+        font-size: rem(24rem);
+        line-height: rem(40rem);
       }
     }
   }
