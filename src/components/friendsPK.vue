@@ -8,9 +8,9 @@
             <div class="add" v-on:click="jumpToAddFriend">添加</div>
         </div>
         <div class="topPKNav">
-            <div class="active">简单</div>
-            <div>普通</div>
-            <div>困难</div>
+            <div v-bind:class="{active:active == 1 }" v-on:click="tabClickNav(1)">简单</div>
+            <div v-bind:class="{active:active == 2 }" v-on:click="tabClickNav(1)">普通</div>
+            <div v-bind:class="{active:active == 3 }" v-on:click="tabClickNav(1)">困难</div>
         </div>
         <div class="main">
             <img class="bg" src="../assets/img/happyIdiom/happyIdiom_friendsPk_bg.png" />
@@ -60,7 +60,8 @@ export default {
           pulldownMsg: "下拉刷新",
           pullupMsg: "加载更多",
           pulldownShow: false,
-          items: 10
+          items: 10,
+          active: 1
         }
     },
     created() {
@@ -129,6 +130,10 @@ export default {
             }
           })
        
+      },
+      tabClickNav(num) {
+        console.log(num);
+        this.active = num;
       }
 
     }
