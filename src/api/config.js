@@ -11,7 +11,7 @@ class Config {
 }
 
 Config.headers = {
-    Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMDIiLCJjcmVhdGVkIjoxNTQzODkzODM0NDgxLCJzY29wZSI6bnVsbCwiaXNzIjoiY3VzdG9tZXJfc3R1ZGVudF9hcHAiLCJleHAiOjE1NDY0ODU4MzQsIm5vbmNlU3RyIjoiYXo4aGFzNjB4bjBhMDB5aCJ9.Q6IFKxmqZf1zM-PXTFhlGo3SpfeiMo6ROLlX-9EKsUb9HckwTJNstlxv2p-9pMPKOetARv30ELKyZGE_5fcyrw"
+    Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMjUiLCJjcmVhdGVkIjoxNTQ0NjkwMjIxODYyLCJzY29wZSI6bnVsbCwiaXNzIjoiY3VzdG9tZXJfc3R1ZGVudF9hcHAiLCJleHAiOjE1NDcyODIyMjEsIm5vbmNlU3RyIjoia3dpcnkycWJobG54N3AxMiJ9.acJboKzxZl-FPmv-ragbX7DtAeie0h1KqEqF3Dc6bli9-R6gMTYLXQvf1VLOuH4yH6YNt1Wg5IgyUuchkMBXaw"
   };
 
 export { Config };

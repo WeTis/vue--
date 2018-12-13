@@ -180,7 +180,6 @@ class Api extends Base {
       url: "/customerIndex/game/idiom/getUserRewardLog",
       data: {}
     }
-
     return this.request(param);
   }
   

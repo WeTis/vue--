@@ -53,7 +53,7 @@
         <div class="buttonBottom">
           <img src="../assets/img/happyIdiom/idiom-failure-daan.png" v-on:click="clickShowExplainList"/>
           <img src="../assets/img/happyIdiom/idiom-failure-con1.png" v-on:click="rePlayGame" />
-          <img src="../assets/img/happyIdiom/idiom-failure-end.png" />
+          <img src="../assets/img/happyIdiom/idiom-failure-end.png" v-on:click="exitGameBtn"/>
         </div>
       </div>
     </div>
@@ -62,20 +62,21 @@
       <div class="elasticFrame">
         <img src="../assets/img/happyIdiom/happyIdiom_customs.png" />
         <div class="buttonBottom">
-          <img src="../assets/img/happyIdiom/happyIdiom_sucess_return.png"/>
+          <img src="../assets/img/happyIdiom/happyIdiom_sucess_return.png" v-on:click="exitGameBtnByGameSuccess"/>
           <img src="../assets/img/happyIdiom/happyIdiom_view.png" v-on:click="clickShowExplainList" />
           <img src="../assets/img/happyIdiom/happyIdiom_next_customs.png" v-on:click="clickIntoNext" />
         </div>
       </div>
     </div>
     <!-- 红包弹框 -->
-    <div class="enevlBox">
+    <div class="enevlBox" v-show="enevlBoxShow">
       <img src="../assets/img/happyIdiom/happyIdiom-envel-close-u.png"  v-bind:class="{hide:isShowAnmate}" v-on:click="showEnevlBox" />
       <div class="showEnevl"  v-bind:class="{show:isShowAnmate}">
         <img src="../assets/img/happyIdiom/happyIdiom-envel-open.png" />
+        <div class="rewardNum">{{rewardNum}}元</div>
         <div class="buttonBottom">
-          <img src="../assets/img/happyIdiom/happyIdiom_sucess_return.png" class="envel-r" />
-          <img class="envel-q" src="../assets/img/happyIdiom/idiom-return-y-b.png"/>
+          <img src="../assets/img/happyIdiom/happyIdiom_sucess_return.png" class="envel-r" v-on:click="exitGameBtn" />
+          <img class="envel-q" src="../assets/img/happyIdiom/idiom-return-y-b.png" v-on:click="gameOverShowByenevlBox" />
         </div>
       </div>
     </div>
@@ -125,6 +126,8 @@ export default {
       gameOverShow: false,
       gameSuccessShow: false,
       explainListShow: false,
+      enevlBoxShow: false,
+      rewardNum: 0, // 红包金额
       trueNum: 0,  // 正确数量
       nextData: {},  // 下一关数据
     }
@@ -272,7 +275,6 @@ export default {
        }
     },
     arrToString(arr){
-      console.log(arr);
       return arr.join('');
     },
     clearBoxShaw(index){
@@ -294,7 +296,8 @@ export default {
        }
     },
     showEnevlBox(){
-      this.isShowAnmate = true;
+      this.getRewardNum();
+      
     },
     exitGameBtn(){
       this.$router.push('/start');
@@ -326,11 +329,25 @@ export default {
       // 下一关
       this.claerAllData();   // 重置data中的数据
       this.judgeLevel();  // 判断等级
-      this.getData();   // 获取数据
+      this.setNextData(this.nextData)   // 获取数据
+    },
+    setNextData(res) {
+       let data = res.params
+        this.setData(data.idiomCharArray);
+        this.time = data.limitTime;
+        // 设置输入框
+        let len = data.idiomCount;
+        for(let i = 0; i < len; i++){
+         this.idiomText.set(i+1,[]);
+        }
+        // 设置正确答案
+        this.setDataTrue(data.idiomList);
+        // 解释
+        this.idiomList.push(...data.idiomList);
     },
     getNextData() {
       api.getNextIdiomList().then((res) => {
-
+        this.nextData = res;
       }).catch(()=>{
         console.log(5555)
        });
@@ -351,20 +368,56 @@ export default {
       this.gameOverShow = false;
       this.gameSuccessShow = false;
       this.explainListShow = false;
+      this.enevlBoxShow = false;
       this.trueNum = 0;  // 正确数量
+    },
+    gameOverApi() {
+      api.setFinishGame().then((res) => {
+         console.log(res.params.rewardStatus);
+        if(res.params.rewardStatus == 1){
+          // 有奖励
+          this.enevlBoxShow = true;
+        }else{
+          // 无奖励
+          this.gameOverShow = true;
+        }
+      }).catch(() => {
+          console.log("是啊比");
+      })
+    },
+    getRewardNum() {
+      // 获取红包金额
+      api.getReward().then((res) => {
+          this.rewardNum = res.params.rewardAmount;
+          this.isShowAnmate = true;
+      }).catch(() => {
+        console.log("获取失败");
+      })
+    },
+    gameOverShowByenevlBox() {
+      this.enevlBoxShow = false;
+      this.gameOverShow = true;
+    },
+    exitGameBtnByGameSuccess() {
+      api.setFinishGame().then((res) => {
+         this.exitGameBtn();
+      }).catch(() => {
+          console.log("是啊比");
+      })
     }
   },
   watch:{
     time(val,oldVal) {
       console.log(val,oldVal);
       if(val == 0){
-        this.gameOverShow = true;
+        this.gameOverApi();
       }
     },
     trueNum(val,oldVal) {
       if(val == 4){
         clearInterval(this.timer);
         this.gameSuccessShow = true;
+        this.getNextData();
       }
     }
   }
@@ -654,7 +707,6 @@ $color : red;
   justify-content: center;
   align-items: center;
   z-index: 999;
-  display: none;
   &>img{
     position: absolute;
     width: rem(576rem);
@@ -680,6 +732,14 @@ $color : red;
       width: 100%;
       height: 100%;
       display: block;
+    }
+    .rewardNum{
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      color: #D93142;
+      font-size: rem(85rem);
+      top: rem(163rem);
     }
     .buttonBottom{
       position: absolute;

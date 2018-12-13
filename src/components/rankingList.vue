@@ -8,36 +8,38 @@
     </div>
     <div class="centerbox">
       <div class="titleName">我的闯关</div>
-      <div class="rankingNum"><span>23</span>名</div>
+      <div class="rankingNum"><span>{{topData.yesterdayPassLevel ? topData.yesterdayPassLevel : ""}}</span>{{topData.yesterdayPassLevel ? "" : "暂无排"}}名</div>
       <div class="results">
         <div class="yesterday">
-          昨日成绩
-          <span>56</span>
+          今日排行
+          <span>{{topData.todayRank}}</span>
         </div>
         <div class="history">
           历史最佳
-          <span>98</span>
+          <span>{{topData.bestPassLevel}}</span>
         </div>
       </div>
     </div>
     <div class="rangkingList">
        <div class="tabBtn">
-         <div class="nowBtn active">实时排行</div>
-         <div class="yesterdayBtn">昨日排行</div>
+         <div class="nowBtn " v-bind:class="{active:active}" v-on:click="tabBtnClick(1)">实时排行</div>
+         <div class="yesterdayBtn" v-bind:class="{active:!active}" v-on:click="tabBtnClick(2)">昨日排行</div>
        </div>
        <div class="listS">
-         <div class="list" v-for="item in 10">
+         <div class="list" v-for="item in todayRankList">
            <div class="left">
-             <img src="../assets/img/happyIdiom/happyIdiom_rankingList_1.png" />
-             <span></span>
+             <img src="../assets/img/happyIdiom/happyIdiom_rankingList_1.png" v-show="item.rankLevel == 1"/>
+             <img src="../assets/img/happyIdiom/happyIdiom_rankingList_2.png" v-show="item.rankLevel == 3"/>
+             <img src="../assets/img/happyIdiom/happyIdiom_rankingList_3.png" v-show="item.rankLevel == 2"/>
+             <span v-show="item.rankLevel > 3">{{item.rankLevel}}</span>
            </div>
-           <img src="" class="headImg" />
+           <img v-bind:src="item.userHeadImage" class="headImg" />
            <div class="descrptDiv">
-             <span class="name">黄若然</span>
-             <span class="info">已闯10关</span>
+             <span class="name">{{item.userName}}</span>
+             <span class="info">已闯{{item.roundLevel}}关</span>
            </div>
            <div class="num">
-             ￥20.0
+             ￥{{item.rewardAmount}}
            </div>
          </div>
        </div>
@@ -46,6 +48,11 @@
 </template>
 
 <script>
+import $ from 'jquery';
+import {Api} from '../api/api.js'
+
+const api = new Api();
+
 export default {
   name: 'rankingList',
   props: {
@@ -53,14 +60,63 @@ export default {
   },
   data () {
     return {
-
+      active: true,
+      topData: {},
+      todayRankList: [],
+      historyList: [],
+      nowList: [],
     }
+  },
+  created(){
+     this.getRankingListData();
   },
   methods: {
     clickReturn(){
       this.$router.push({
         name:'start'
       });
+    },
+    getRankingListData() {
+      if(this.nowList.length > 0) {
+         this.todayRankList.push(...this.nowList)
+      }else{
+        api.getUserRank().then((res) => {
+        let data = res.params;
+         this.topData = {
+           bestPassLevel: data.bestPassLevel,
+           todayRank: data.todayRank,
+           yesterdayPassLevel: data.yesterdayPassLevel
+         };
+         this.nowList.push(...data.todayRankList);
+         this.todayRankList.push(...data.todayRankList);
+        }).catch(() => {
+
+        })
+      }
+      
+    },
+    getUserYesterdayRank() {
+      if(this.historyList.length > 0){
+        this.todayRankList.push(...this.historyList)
+      }else{
+        api.getUserYesterdayRank().then((res) => {
+          let data = res.params;
+        this.historyList.push(...data.todayRankList);
+        }).catch(() => {
+
+        })
+      }
+      
+    },
+    tabBtnClick(num) {
+      this.todayRankList = [];
+      if(num == 1){
+       this.active = true;
+       this.getRankingListData();
+      }else if(num == 2){
+       this.active = false;
+       this.getUserYesterdayRank();
+      }
     }
   }
 }

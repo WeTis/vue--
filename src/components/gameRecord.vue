@@ -10,20 +10,20 @@
             <div class="title">奖励记录</div>
         </div>
         <div class="gameRecordList">
-            <div class="item" v-for="item in 10">
+            <div class="item" v-for="item in gameRecordList">
                 <div class="headImg">
                     <img src="../assets/img/happyIdiom/happyIdiom-record-j.png" />
                     <div class="type">简单模式</div>
                 </div>
                 <div class="mainText">
-                    <img src="" />
+                    <img v-bind:src="item.userHeadImage" />
                     <div class="record">
-                        <div class="name">打破个人记录</div>
-                        <div class="time">2018.02.16</div>
+                        <div class="name">{{item.extraMessage}}</div>
+                        <div class="time">{{changeTime(item.createTime)}}</div>
                     </div>
                     <div class="reward">
-                        <div class="describe">pk成功</div>
-                        <div class="amount">￥ 0.9</div>
+                        <!-- <div class="describe">pk成功</div> -->
+                        <div class="amount">￥ {{item.rewardAmount}}</div>
                     </div>
                 </div>
             </div>
@@ -32,6 +32,11 @@
 </template>
 
 <script>
+import $ from 'jquery';
+import {Api} from '../api/api.js'
+
+const api = new Api();
+
 export default {
     name: 'GameRecord',
     props: {
@@ -39,14 +44,36 @@ export default {
     },
     data () {
         return {
-
+            gameRecordList: []
         }
+    },
+    created(){
+     this.gameRecordListData();
     },
     methods: {
         clickReturn(){
           this.$router.push({
             name:'start'
           });
+        },
+        gameRecordListData() {
+            api.getUserRewardList().then((res) => {
+              let arr = res.params.rewardLogList;
+              console.log(arr);
+              this.gameRecordList.push(...arr);
+            }).catch(() => {
+               console.log("获取失败");
+            })
+        },
+        changeTime(time) {
+            let date = new Date(time);
+            let Y = date.getFullYear() + '.';
+            let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '.';
+            let D = date.getDate() + ' ';
+            let h = date.getHours() + ':';
+            let m = date.getMinutes() + ':';
+            let s = date.getSeconds();
+            return Y+M+D;
         }
     }
 }
@@ -135,7 +162,6 @@ $color : red;
         img{
             width: rem(80rem);
             height: rem(80rem);
-            border: 1px solid #000;
             border-radius: 50%;
             margin-right: rem(30rem);
         }
