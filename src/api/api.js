@@ -45,10 +45,12 @@ class Api extends Base {
    * 获取下一关数据
    * @return {[type]} [description]
    */
-  getNextIdiomList() {
+  getNextIdiomList(pkLogId = 0) {
     let param = {
       url: "/customerIndex/game/idiom/getNextIdiomList",
-      data: {},
+      data: {
+        pkLogId: pkLogId
+      },
     }
     return this.request(param);
   }
@@ -56,11 +58,11 @@ class Api extends Base {
   /**
    * 设置游戏结束
    */
-  setFinishGame() {
+  setFinishGame(pkLogId = 0) {
     let param = {
       url: "/customerIndex/game/idiom/userFinishGame",
       data: {
-
+        pkLogId: pkLogId
       }
     }
 
@@ -71,10 +73,12 @@ class Api extends Base {
    * 获取奖励金额
    * @return {[type]} [description]
    */
-  getReward() {
+  getReward(pkLogId = 0) {
     let param = {
       url: "/customerIndex/game/idiom/studentReceiveReward",
-      data: {}
+      data: {
+        pkLogId:pkLogId
+      }
     }
 
     return this.request(param);
@@ -110,7 +114,7 @@ class Api extends Base {
       }
     }
 
-    this.request(param);
+    return this.request(param);
   }
   
   /**

@@ -16,11 +16,11 @@
         </div>
         <div class="friendsList">
             <ul>
-                <li v-for="item in 10">
+                <li v-for="item in friendList">
                     <div class="item">
-                        <img src="" class="headImg" />
-                        <div class="name">黄少阳</div>
-                        <div class="addBtn">添加</div>
+                        <img v-bind:src="item.matchHeadImage" class="headImg" />
+                        <div class="name">{{item.matchName}}</div>
+                        <div class="addBtn" v-on:click="addFrinedsTogame(item.matchId)">添加</div>
                     </div>
                 </li>
             </ul>
@@ -29,6 +29,11 @@
 </template>
 
 <script>
+import $ from 'jquery';
+import {Api} from '../api/api.js'
+
+const api = new Api();
+
 export default {
     name: 'addFriend',
     props: {
@@ -36,10 +41,36 @@ export default {
     },
     data () {
         return {
-            phoneNumber: ''
+            phoneNumber: '',
+            friendList:[],
+            difficultyLevel: 0
         }
     },
+    created() {
+        this.difficultyLevel = this.$route.params.spellLevel;  // 获取pk难度
+        this.getData();
+    },
     methods: {
+        getData() {
+          api.getHistoryMatchList().then((res) => {
+            let data = res.params.historyMatchList;
+            this.friendList.push(...data);
+          }).catch((res) => {
+
+          });
+        },
+        addFrinedsTogame(id){
+          api.setInviteJoinGame(this.difficultyLevel,id).then((res) => {
+             this.$router.push({
+               name:'friendsPK',
+               params: {
+                spellLevel: this.difficultyLevel
+               }
+             });
+          }).catch((res) => {
+
+          });
+        },
         clickReturn(){
           this.$router.push({
             name:'friendsPK'
@@ -47,6 +78,13 @@ export default {
         },
         searchFriends() {
             console.log(this.phoneNumber);
+            api.searchGoodFriends(this.phoneNumber).then((res) => {
+                 let data = res.params;
+                 this.friendList.push(data);
+                 console.log("获取成");
+            }).catch(() => {
+console.log("获取shibai");
+            })
         },
         clear() {
             this.phoneNumber = '';

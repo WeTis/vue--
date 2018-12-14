@@ -130,15 +130,17 @@ export default {
       rewardNum: 0, // 红包金额
       trueNum: 0,  // 正确数量
       nextData: {},  // 下一关数据
+      pkLogId: 0,
     }
   },
   created(){
+      this.pkLogId = this.$route.params.pkLogId || 0;
       this.judgeLevel();  // 判断等级
       this.getData();   // 获取数据
   },
   methods: {
     getData() {
-       api.getGameData(this.$route.params.spellLevel)
+       api.getGameData(this.$route.params.spellLevel,this.pkLogId)
        .then((res) => {
         let data = res.params
         this.setData(data.idiomCharArray);
@@ -346,7 +348,7 @@ export default {
         this.idiomList.push(...data.idiomList);
     },
     getNextData() {
-      api.getNextIdiomList().then((res) => {
+      api.getNextIdiomList(this.pkLogId).then((res) => {
         this.nextData = res;
       }).catch(()=>{
         console.log(5555)
@@ -372,7 +374,7 @@ export default {
       this.trueNum = 0;  // 正确数量
     },
     gameOverApi() {
-      api.setFinishGame().then((res) => {
+      api.setFinishGame(this.pkLogId).then((res) => {
          console.log(res.params.rewardStatus);
         if(res.params.rewardStatus == 1){
           // 有奖励
@@ -387,7 +389,7 @@ export default {
     },
     getRewardNum() {
       // 获取红包金额
-      api.getReward().then((res) => {
+      api.getReward(this.pkLogId).then((res) => {
           this.rewardNum = res.params.rewardAmount;
           this.isShowAnmate = true;
       }).catch(() => {
@@ -399,7 +401,7 @@ export default {
       this.gameOverShow = true;
     },
     exitGameBtnByGameSuccess() {
-      api.setFinishGame().then((res) => {
+      api.setFinishGame(this.pkLogId).then((res) => {
          this.exitGameBtn();
       }).catch(() => {
           console.log("是啊比");
@@ -410,7 +412,8 @@ export default {
     time(val,oldVal) {
       console.log(val,oldVal);
       if(val == 0){
-        this.gameOverApi();
+        this.gameOverApi(this.pkLogId);
+        this.exit = false;
       }
     },
     trueNum(val,oldVal) {
