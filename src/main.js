@@ -74,12 +74,18 @@ new Vue({
       let scale = document.documentElement.clientWidth || document.body.clientWidth;
       let scaleH = document.documentElement.clientHeight || document.body.clientHeigth;
       
-      if(window.orientation==90||window.orientation==270){
-        // 横屏
-        scale = scaleH*(scaleH/scale);
-      }
-      if(scale > 700){
-        scale = scale*(scale/scaleH);
+      // if(window.orientation==90||window.orientation==270){
+      //   // 横屏
+      //   scale = scaleH*(scaleH/scale);
+      // }
+      // if(scale > 700){
+      //   scale = scale*(scale/scaleH);
+      // }
+      var scaleJ = 375/667 * scaleH;
+      if(scaleJ > scale){
+        scale = scale;
+      }else{
+        scale = scaleJ;
       }
       document.documentElement.style.fontSize = scale/10 + 'px';
 

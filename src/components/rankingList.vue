@@ -5,6 +5,9 @@
         <img src="../assets/img/happyIdiom/happyIdiom_rankingList-return.png" />
       </div>
       <div class="title">英雄排行榜</div>
+      <div class="isEnvel" v-on:click="showoutEnevlBox" v-show="showEnvelImg">
+        <img src="../assets/img/happyIdiom/happyIdiom_rankingList_envel.png" />
+      </div>
     </div>
     <div class="centerbox">
       <div class="titleName">我的闯关</div>
@@ -44,6 +47,17 @@
          </div>
        </div>
     </div>
+    <!-- 红包弹框 -->
+    <div class="enevlBox" v-show="enevlBoxShow">
+      <img src="../assets/img/happyIdiom/happyIdiom-envel-close-u.png"  v-bind:class="{hide:isShowAnmate}" v-on:click="showEnevlBox" />
+      <div class="showEnevl"  v-bind:class="{show:isShowAnmate}">
+        <img src="../assets/img/happyIdiom/happyIdiom-envel-open.png" />
+        <div class="rewardNum">{{rewardNum}}元</div>
+        <div class="buttonBottom">
+          <img class="envel-q" src="../assets/img/happyIdiom/idiom-return-y-b.png" v-on:click="hideEnvel" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -65,6 +79,10 @@ export default {
       todayRankList: [],
       historyList: [],
       nowList: [],
+      enevlBoxShow: false,
+      rewardNum: 0,
+      isShowAnmate: false,
+      showEnvelImg: false,
     }
   },
   created(){
@@ -82,6 +100,9 @@ export default {
       }else{
         api.getUserRank().then((res) => {
         let data = res.params;
+        if(data.rewardStatus == 1){
+            this.showEnvelImg = true;
+        };
          this.topData = {
            bestPassLevel: data.bestPassLevel,
            todayRank: data.todayRank,
@@ -117,7 +138,24 @@ export default {
        this.active = false;
        this.getUserYesterdayRank();
       }
-    }
+    },
+    showoutEnevlBox() {
+      // 显示hongb,
+      this.enevlBoxShow = true;
+    },
+    showEnevlBox() {
+      api.getReward().then((res) => {
+          this.rewardNum = res.params.rewardAmount;
+          this.friendsPKList[this.indexfriendsPKList].rewardValidStatus = 1;
+          this.isShowAnmate = true;
+        }).catch(() => {
+            console.log("是吧")
+        });
+    },
+    hideEnvel() {
+        this.enevlBoxShow = false;
+        this.isShowAnmate = false;
+      },
   }
 }
 </script>
@@ -165,6 +203,29 @@ $color : red;
     letter-spacing: 1px;
     // font-weight: bold;
     font-family: "PingFang-SC-Medium";
+  }
+  .isEnvel{
+    position:absolute;
+    top: rem(30rem);
+    right: rem(47rem);
+    z-index: 10;
+    width: rem(42rem);
+    height: rem(54rem);
+    img{
+      width: 100%;
+      height: 100%;
+    }
+    &::before{
+      display: block;
+      content: "";
+      position: absolute;
+      width: rem(12rem);
+      height: rem(12rem);
+      border-radius: 50%;
+      background-color: #E8360C;
+      top: - rem(12rem);
+      right: - rem(12rem);
+    }
   }
 }
 .centerbox{
@@ -298,7 +359,7 @@ $color : red;
     .headImg{
       width: rem(80rem);
       height: rem(80rem);
-      border: 1px solid #000000;
+      /*border: 1px solid #000000;*/
       border-radius: 50%;
       margin-right: rem(20rem);
     }
@@ -327,5 +388,71 @@ $color : red;
 
 
 }
+/*红包*/
+.enevlBox{
 
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  &>img{
+    position: absolute;
+    width: rem(576rem);
+    height: rem(719rem);
+    transform: scale(1);
+    transition: all 0.5s;
+  }
+  .hide{
+   transform: scale(0);
+  }
+  .show{
+    transform: scale(1);
+  }
+  &>div{
+    position: relative;
+    display: block;
+    width: rem(576rem);
+    height: rem(719rem);
+    transform: scale(0);
+    transition: all 0.5s;
+    transition-delay: 0.5s;
+    &>img{
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .rewardNum{
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      color: #D93142;
+      font-size: rem(85rem);
+      top: rem(163rem);
+    }
+    .buttonBottom{
+      position: absolute;
+      width: 100%;
+      bottom: rem(83rem);
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: center;
+      .envel-r{
+        width: rem(310rem);
+        height: rem(110rem);
+      }
+      .envel-q{
+        width: rem(197rem);
+        height: rem(110rem);
+      }
+    }
+  }
+}
 </style>

@@ -208,7 +208,7 @@ $color : red;
            height: rem(80rem);
            border-radius: 50%; 
            margin-right: rem(20rem);
-           border: 1px solid #000000;
+           /*border: 1px solid #000000;*/
         }
         .name{
             flex: 1;

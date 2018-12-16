@@ -86,7 +86,7 @@
                     </ul>
                      <!-- 底部提示信息 -->
                     <div class="bottom-tip">
-                     <span class="loading-hook">{{pullupMsg}}</span>
+                     <span class="loading-hook">{{ friendsPKList.length > 0 ? pullupMsg : "暂无数据"}}</span>
                     </div>
                   </div>
                 </div>
@@ -261,7 +261,9 @@ export default {
                   let data = res.params;
                   this.userId = data.userSelfId;
                   this.friendsPKList.push(...data.pkList);
-
+                  if(data.pkList.length == 0){
+                    this.pullupMsg = "我是有底线的";
+                  }
                   setTimeout(() => {
                     this.scroll.refresh();
                     this.scroll.finishPullUp();
@@ -269,6 +271,7 @@ export default {
                   
                 }else{
                   this.scroll.finishPullUp();
+                  this.pullupMsg = "我是有底线的";
                 }
                 
                 

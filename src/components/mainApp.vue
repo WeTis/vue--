@@ -10,7 +10,7 @@
       </div>
       <div class="levelNum">
         <img src="../assets/img/happyIdiom/happyIdiom-main-cent.png"/>
-        <span>10</span>
+        <span>{{roundLevel}}</span>
       </div>
       <div class="audioBtn radiusBtn">
         <img src="../assets/img/happyIdiom/happyIdiom-main-audio.png">
@@ -131,6 +131,7 @@ export default {
       trueNum: 0,  // 正确数量
       nextData: {},  // 下一关数据
       pkLogId: 0,
+      roundLevel:1,   // 关数
     }
   },
   created(){
@@ -145,6 +146,7 @@ export default {
         let data = res.params
         this.setData(data.idiomCharArray);
         this.time = data.limitTime;
+        this.roundLevel = data.roundLevel;
         // 设置输入框
         let len = data.idiomCount;
         for(let i = 0; i < len; i++){
@@ -337,6 +339,7 @@ export default {
        let data = res.params
         this.setData(data.idiomCharArray);
         this.time = data.limitTime;
+        this.roundLevel = data.roundLevel;
         // 设置输入框
         let len = data.idiomCount;
         for(let i = 0; i < len; i++){

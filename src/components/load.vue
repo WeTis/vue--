@@ -65,11 +65,21 @@ export default {
     require("../assets/img/happyIdiom/happyIdiom_view.png"),
     require("../assets/img/happyIdiom/happyIdiom_next_customs.png"),
     require("../assets/img/happyIdiom/happyIdiom-envel-close-u.png"),
-    require("../assets/img/happyIdiom/happyIdiom-envel-open.png")
-    // require(""),
-    // require(""),
-    // require(""),
-    // require(""),
+    require("../assets/img/happyIdiom/happyIdiom-envel-open.png"),
+    require("../assets/img/happyIdiom/happyIdiom-start-bg.png"),
+    require("../assets/img/happyIdiom/happyIdiom_rankingList-return.png"),
+    require("../assets/img/happyIdiom/happyIdiom-record-j.png"),
+    require("../assets/img/happyIdiom/happyIdiom_rankingList-return.png"),
+    require("../assets/img/happyIdiom/happyIdiom_rankingList_1.png"),
+    require("../assets/img/happyIdiom/happyIdiom_rankingList_2.png"),
+    require("../assets/img/happyIdiom/happyIdiom_rankingList_3.png"),
+    require("../assets/img/happyIdiom/happyIdiom_rankingList_envel.png"),
+    require("../assets/img/happyIdiom/happyIdiom_rankingList-return.png"),
+    require("../assets/img/happyIdiom/happyIdiom-envel-close-u.png"),
+    require("../assets/img/happyIdiom/happyIdiom-envel-open.png"),
+    require("../assets/img/happyIdiom/idiom-return-y-b.png"),
+    require("../assets/img/happyIdiom/happyIdiom_friendsPk_bg.png"),
+    require("../assets/img/happyIdiom/happlyIdiom_PK_success.png")
     // require(""),
     // require(""),
     // require(""),
@@ -92,7 +102,7 @@ export default {
          console.log(this.count+"失败");
      }
      oImg.src = src;
-     
+     console.log(src);
    })
   },
   watch: {
