@@ -3,7 +3,9 @@
     <!-- 干啥沙发舒服哈咖啡暗示法哈萨克发哈是开发哈萨克发哈是开发还是法师法师开发部署FFH开发HKFKFH开发F发返回FEF而非FJoFH播放，C, -->
     <!-- <Start></Start> -->
     <div class="content">
-      <router-view></router-view>
+      <transition name="fade">
+        <router-view></router-view>
+      </transition>
     </div>
   </div>
 </template>
@@ -97,6 +99,9 @@ body *{-webkit-tap-highlight-color:rgba(0,0,0,0);tap-highlight-color:rgba(0,0,0,
 input,textarea,select{outline: none; -webkit-appearance:none;border: none;}
 .clearOver{overflow: hidden; text-overflow:ellipsis; white-space: nowrap;}
 
+@function rem($n) {
+  @return $n/2/37.5;
+}
 /*公共样式*/
 .bgimg{
   position:absolute;
@@ -135,5 +140,11 @@ html{
     height: 100%;
     width: 100%;
   }
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

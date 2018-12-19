@@ -12,7 +12,7 @@ class Base {
    */
   request(param) {
      let headers = this.headers;
-     let url = param.url;
+     let url ="/api" + param.url;
      if(!param.type){
        param.type = "POST";
      }
