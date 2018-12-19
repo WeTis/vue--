@@ -20,8 +20,7 @@ export default {
     }
   },
   created() {
-        // this.loadData()
-        
+        this.checkPhone();
     },
     methods:{
    loadData() {
@@ -30,15 +29,42 @@ export default {
           this.$nextTick(() => {
             if (!this.scroll) {
               this.scroll = new Bscroll(this.$refs.wrapperS, {
-                scrollY: true,
                 click: true,
+                stopPropagation: true,
+                bounce: {
+                  top: false,
+                  bottom: false,
+                  left: false,
+                  right: false 
+                }
               })
             } else {
               this.scroll.refresh()
             }
           })
        
-      }
+      },
+      checkPhone() {
+        let isAndroid = true;
+        let agent = (navigator.userAgent || navigator.vendor || window.opera);
+        if (agent != null) {
+            let agentName = agent.toLowerCase();
+            if (/android/i.test(agentName)) {
+                isAndroid = true;
+                this.loadData();
+            } else if (/iphone/i.test(agentName)) {
+              isAndroid = false;
+              this.loadData();
+            }else if(/iPad/i.test(agentName)){
+              isAndroid = false;
+                
+            }else{
+              isAndroid = true;
+              this.loadData();
+            }
+        }
+        this.isAndroid = isAndroid;
+      },
     
   }
 }
@@ -91,20 +117,23 @@ width: 100%;
 overflow: hidden;
 }
 html{
+  position: fixed;
+  top: 0;
+  bottom: 0;
   width: 100%;
   overflow: hidden;
 }
 #app{
-  // position: fixed;
-  // top: 0;
-  // bottom: 0;
+  position: absolute;
+  top: 0;
+  bottom:0;
   width: 100%;
   box-sizing: border-box;
   font-size: 16px;
   overflow: hidden;
-  // .content{
-  //   width: 100%;
-  //   height: 100%;
-  // }
+  .content{
+    height: 100%;
+    width: 100%;
+  }
 }
 </style>

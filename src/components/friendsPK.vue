@@ -54,7 +54,7 @@
                                     
                                     <div class="btn startBtn" v-if="item.initiatorFinishStatus == 0"  v-on:click="clickStart(item.id)">开始</div>
                                     <div class="btn" v-if="item.initiatorFinishStatus == 1 && item.recipientFinishStatus == 0" >对方未开始</div>
-                                    <div class="btn" v-if="item.initiatorFinishStatus == 1 && item.recipientFinishStatus == 1 && item.rewardValidStatus != 1 && item.rewardValidStatus != 3">
+                                    <div class="btn" v-if="item.initiatorFinishStatus == 1 && item.recipientFinishStatus == 1 && userId != item.winnerId">
                                      {{judgeWinner(item.winnerId,item.recipientId)}}
                                     </div>
                                     <div class="btn envelBtn" v-if="userId == item.winnerId  && item.rewardValidStatus == 3"  v-on:click="clickenvelBtn(index,item.id)">
@@ -71,7 +71,7 @@
                                      </div>
                                     <div class="btn startBtn" v-if="item.recipientFinishStatus == 0" v-on:click="clickStart(item.id)">挑战</div>
                                     <div class="btn" v-if="item.initiatorFinishStatus == 0 && item.recipientFinishStatus == 1"  >对方未开始</div>
-                                     <div class="btn" v-if="item.initiatorFinishStatus == 1 && item.recipientFinishStatus == 1 && item.rewardValidStatus != 1 && item.rewardValidStatus != 3" >
+                                     <div class="btn" v-if="item.initiatorFinishStatus == 1 && item.recipientFinishStatus == 1 && userId != item.winnerId" >
                                      {{judgeWinner(item.winnerId,item.initiatorId)}}
                                     </div>
                                      <div class="btn envelBtn" v-if="userId == item.winnerId  && item.rewardValidStatus == 3"  v-on:click="clickenvelBtn(index,item.id)">
@@ -218,6 +218,7 @@ export default {
           this.scroll = new Bscroll(this.$refs.wrapper, {
             scrollY: true,
             click: true,
+            stopPropagation: true,
             pullDownRefresh: {
               threshold: 50,
               stop: 50
@@ -302,6 +303,8 @@ $color : red;
 @function rem($n) {
     @return $n/2/37.5;
 }
+#friendsPK{
+
 .topNav{
     width: 100%;
     height: rem(95rem);
@@ -435,6 +438,7 @@ $color : red;
     }
     .content{
       min-height: 101%;
+      height: auto;
     }
     .content li{
         width: 100%;
@@ -536,6 +540,8 @@ $color : red;
   z-index: 999;
   &>img{
     position: absolute;
+    top: 50%;
+    margin-top: - rem(359rem);
     width: rem(576rem);
     height: rem(719rem);
     transform: scale(1);
@@ -587,5 +593,5 @@ $color : red;
     }
   }
 }
-
+}
 </style>

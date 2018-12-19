@@ -5,7 +5,7 @@
     </div>
     <div class="startTop">
       <div class="return">
-        <a href="#"></a>
+        <a href="./returnIdiom.html"></a>
         <img src="../assets/img/happyIdiom/happyIdiom-main-return.png" />
       </div>
       <div class="Rankinglist" v-on:click="jumpToGameRecord">
@@ -24,7 +24,7 @@
     <div class="bottomButton" v-on:click="jumpToRankingList">
       <img class="btnBot" src="../assets/img/happyIdiom/happyIdiom-start.png" />
     </div>
-
+    <div class="msg" v-show="!isAndroid">声明: 本活动与苹果公司Apple Inc无关</div>
   </div>
 </template>
 
@@ -36,8 +36,11 @@ export default {
   },
   data () {
     return {
-
+      isAndroid: false
     }
+  },
+ created() {
+    this.checkPhone();
   },
   methods: {
      jumpToMainApp(n) {
@@ -62,7 +65,25 @@ export default {
       this.$router.push({
         name:'friendsPK'
       });
-     }
+     },
+     checkPhone() {
+        let isAndroid = true;
+        let agent = (navigator.userAgent || navigator.vendor || window.opera);
+        if (agent != null) {
+            let agentName = agent.toLowerCase();
+            if (/android/i.test(agentName)) {
+                isAndroid = true;
+            } else if (/iphone/i.test(agentName)) {
+              isAndroid = false;
+            }else if(/iPad/i.test(agentName)){
+              isAndroid = false;
+                
+            }else{
+              isAndroid = true;
+            }
+        }
+        this.isAndroid = isAndroid;
+      }
   }
 }
 </script>
@@ -97,6 +118,18 @@ $color : red;
     width: rem(106rem);
     height: rem(94rem);
   }
+  .return{
+    position:relative;
+    a{
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      z-index: 999;
+      top: 0;
+      left: 0;
+    }
+  }
 }
 
 
@@ -116,7 +149,7 @@ $color : red;
   position:absolute;
   width: 100%;
   top: rem(426rem);
-  bottom:rem(90rem);
+  bottom:rem(110rem);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -133,7 +166,7 @@ $color : red;
 .bottomButton{
   position:absolute;
   width: 100%;
-  bottom: rem(23rem);
+  bottom: rem(53rem);
   text-align: center;
   img{
     display: inline-block;
@@ -141,5 +174,14 @@ $color : red;
     height: rem(55rem);
   }
 
+}
+.msg{
+  width: 100%;
+  position: fixed;
+  bottom: rem(5rem);
+  left: 0;
+  font-size: 10px;
+  color: #ffffff;
+  text-align: center;
 }
 </style>

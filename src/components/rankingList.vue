@@ -11,11 +11,11 @@
     </div>
     <div class="centerbox">
       <div class="titleName">我的闯关</div>
-      <div class="rankingNum"><span>{{topData.yesterdayPassLevel ? topData.yesterdayPassLevel : ""}}</span>{{topData.yesterdayPassLevel ? "" : "暂无排"}}名</div>
+      <div class="rankingNum"><span>{{topData.todayRank < 101 ? topData.todayRank : ""}}</span>{{topData.todayRank >= 100  ? "暂无排" : ""}}名</div>
       <div class="results">
         <div class="yesterday">
-          今日排行
-          <span>{{topData.todayRank}}</span>
+          昨日排行
+          <span>{{topData.yesterdayPassLevel}}</span>
         </div>
         <div class="history">
           历史最佳
@@ -28,8 +28,9 @@
          <div class="nowBtn " v-bind:class="{active:active}" v-on:click="tabBtnClick(1)">实时排行</div>
          <div class="yesterdayBtn" v-bind:class="{active:!active}" v-on:click="tabBtnClick(2)">昨日排行</div>
        </div>
-       <div class="listS">
-         <div class="list" v-for="item in todayRankList">
+       <div class="listS" ref="listS">
+        <div class="contentS">
+          <div class="list" v-for="item in todayRankList">
            <div class="left">
              <img src="../assets/img/happyIdiom/happyIdiom_rankingList_1.png" v-show="item.rankLevel == 1"/>
              <img src="../assets/img/happyIdiom/happyIdiom_rankingList_2.png" v-show="item.rankLevel == 3"/>
@@ -45,6 +46,8 @@
              ￥{{item.rewardAmount}}
            </div>
          </div>
+        </div>
+         
        </div>
     </div>
     <!-- 红包弹框 -->
@@ -58,20 +61,23 @@
         </div>
       </div>
     </div>
+    <mesg ref="mesg" v-bind:msg="msg"></mesg>
   </div>
 </template>
 
 <script>
 import $ from 'jquery';
 import {Api} from '../api/api.js'
+import Bscroll from 'better-scroll'
+import mesg from './mesg';
 
 const api = new Api();
 
 export default {
   name: 'rankingList',
-  props: {
-    msg: String
-  },
+  components:{
+        mesg
+    },
   data () {
     return {
       active: true,
@@ -87,6 +93,23 @@ export default {
   },
   created(){
      this.getRankingListData();
+     this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new Bscroll(this.$refs.listS, {
+                click: true,
+                scrollY: true,
+                stopPropagation: true,
+                bounce: {
+                  top: false,
+                  bottom: false,
+                  left: false,
+                  right: false 
+                }
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
   },
   methods: {
     clickReturn(){
@@ -95,6 +118,7 @@ export default {
       });
     },
     getRankingListData() {
+      this.todayRankList = [];
       if(this.nowList.length > 0) {
          this.todayRankList.push(...this.nowList)
       }else{
@@ -117,12 +141,14 @@ export default {
       
     },
     getUserYesterdayRank() {
+      this.todayRankList = [];
       if(this.historyList.length > 0){
         this.todayRankList.push(...this.historyList)
       }else{
         api.getUserYesterdayRank().then((res) => {
           let data = res.params;
-        this.historyList.push(...data.todayRankList);
+        this.historyList.push(...data.yesterdayRankList);
+        this.todayRankList.push(...data.yesterdayRankList);
         }).catch(() => {
 
         })
@@ -149,7 +175,10 @@ export default {
           this.friendsPKList[this.indexfriendsPKList].rewardValidStatus = 1;
           this.isShowAnmate = true;
         }).catch(() => {
-            console.log("是吧")
+            console.log("是吧");
+            this.msg = "红包已过期";
+            this.$refs.mesg.showAnimate();
+            this.enevlBoxShow = false;
         });
     },
     hideEnvel() {
@@ -404,6 +433,8 @@ $color : red;
   z-index: 999;
   &>img{
     position: absolute;
+    top: 50%;
+    margin-top: - rem(359rem);
     width: rem(576rem);
     height: rem(719rem);
     transform: scale(1);

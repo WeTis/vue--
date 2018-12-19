@@ -1,23 +1,10 @@
 <template>
   <div id="load">
     <div class="cssload-load">
-    <div class="cssload-blockcont">
-        <div class="cssload-block" v-for="item in 9"></div>
-        <div class="count">{{count}}%</div>
+    <div class="cssload-container">
+      <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
     </div>
-    <!-- <div class="loader">
-      <div class="square"></div>
-      <div class="square"></div>
-      <div class="square last"></div>
-      <div class="square clear"></div>
-      <div class="square"></div>
-      <div class="square last"></div>
-      <div class="square clear"></div>
-      <div class="square"></div>
-      <div class="square last"></div>
-      <div class="count">{{count}}%</div>
-    </div> -->
-    
+    <div class="count">{{count}}%</div>
   </div>
   </div>
 </template>
@@ -30,6 +17,7 @@ export default {
   data () {
     return {
       count: 0,
+      num: 0,
     }
   },
   created() {
@@ -80,29 +68,43 @@ export default {
     require("../assets/img/happyIdiom/idiom-return-y-b.png"),
     require("../assets/img/happyIdiom/happyIdiom_friendsPk_bg.png"),
     require("../assets/img/happyIdiom/happlyIdiom_PK_success.png")
-    // require(""),
-    // require(""),
-    // require(""),
-    // require(""),
    ];
    
    $.each(arr,(i,src) => {
      let oImg = new Image();
      oImg.onload = () => {
-      let num = (this.count + 100/arr.length)
-        if(i >= arr.length-1){
-          this.count = 100;
-          this.$router.push('/start');
+      let num = (this.count + 100/arr.length);
+
+        if(this.num >= arr.length-1){
+          this.count = 99;
+          console.log("完成");
+          setTimeout(() => {
+            this.count = 100;
+            this.$router.push('/start');
+          },1000);
+          
         }else{
           this.count = num.toFixed(2) * 1;
+          this.num = this.num + 1;
         }
+
      };
      oImg.onerror = () => {
-        this.count += 100/arr.length;
-         console.log(this.count+"失败");
+        let num = (this.count + 100/arr.length);
+        if(this.num >= arr.length-1){
+          this.count = 99;
+          console.log("完成");
+          setTimeout(() => {
+            this.count = 100;
+            this.$router.push('/start');
+          },1000);
+          
+        }else{
+          this.count = num.toFixed(2) * 1;
+          this.num = this.num + 1;
+        }
      }
      oImg.src = src;
-     console.log(src);
    })
   },
   watch: {
@@ -144,6 +146,10 @@ export default {
     // left:calc(50% - 28px);
     width:100px;
     height:100px;
+    top: 50%;
+    margin-top: -50px;
+    left: 50%;
+    margin-left: -50px;
 
 }
 .imgall{
@@ -153,426 +159,149 @@ export default {
   left: 0;
   z-index: -999;
 }
-.cssload-block {
-    position:relative;
-    height:33px;
-    width:33px;
-    display:inline-block;
-    background:rgb(255,215,0);
-    transition:all 0.92s;
-    -o-transition:all 0.92s;
-    -ms-transition:all 0.92s;
-    -webkit-transition:all 0.92s;
-    -moz-transition:all 0.92s;
-    animation: cssload-rot 5.75s linear infinite;
-    -o-animation: cssload-rot 5.75s linear infinite;
-    -ms-animation: cssload-rot 5.75s linear infinite;
-    -webkit-animation: cssload-rot 5.75s linear infinite;
-    -moz-animation: cssload-rot 5.75s linear infinite;
-}
-.cssload-block:nth-child(1) {
-    animation-delay:3.45s;
-    -o-animation-delay:3.45s;
-    -ms-animation-delay:3.45s;
-    -webkit-animation-delay:3.45s;
-    -moz-animation-delay:3.45s;
-}
-.cssload-block:nth-child(2) {
-    animation-delay:1.73s;
-    -o-animation-delay:1.73s;
-    -ms-animation-delay:1.73s;
-    -webkit-animation-delay:1.73s;
-    -moz-animation-delay:1.73s;
-    animation: cssload-rot 13.8s linear infinite;
-    -o-animation: cssload-rot 13.8s linear infinite;
-    -ms-animation: cssload-rot 13.8s linear infinite;
-    -webkit-animation: cssload-rot 13.8s linear infinite;
-    -moz-animation: cssload-rot 13.8s linear infinite;
-}
-.cssload-block:nth-child(3) {
-    animation-delay:2.3s;
-    -o-animation-delay:2.3s;
-    -ms-animation-delay:2.3s;
-    -webkit-animation-delay:2.3s;
-    -moz-animation-delay:2.3s;
-}
-.cssload-block:nth-child(4) {
-    animation-delay:0.23s;
-    -o-animation-delay:0.23s;
-    -ms-animation-delay:0.23s;
-    -webkit-animation-delay:0.23s;
-    -moz-animation-delay:0.23s;
-}
-.cssload-block:nth-child(5) {
-    animation-delay:4.6s;
-    -o-animation-delay:4.6s;
-    -ms-animation-delay:4.6s;
-    -webkit-animation-delay:4.6s;
-    -moz-animation-delay:4.6s;
-}
-.cssload-block:nth-child(6) {
-    animation-delay:2.3s;
-    -o-animation-delay:2.3s;
-    -ms-animation-delay:2.3s;
-    -webkit-animation-delay:2.3s;
-    -moz-animation-delay:2.3s;
-    animation: cssload-rot 8.05s linear infinite;
-    -o-animation: cssload-rot 8.05s linear infinite;
-    -ms-animation: cssload-rot 8.05s linear infinite;
-    -webkit-animation: cssload-rot 8.05s linear infinite;
-    -moz-animation: cssload-rot 8.05s linear infinite;
-}
-.cssload-block:nth-child(7) {
-    animation-delay:0.46s;
-    -o-animation-delay:0.46s;
-    -ms-animation-delay:0.46s;
-    -webkit-animation-delay:0.46s;
-    -moz-animation-delay:0.46s;
-}
-.cssload-block:nth-child(8) {
-    animation-delay:1.73s;
-    -o-animation-delay:1.73s;
-    -ms-animation-delay:1.73s;
-    -webkit-animation-delay:1.73s;
-    -moz-animation-delay:1.73s;
-    animation: cssload-rot 6.9s linear infinite;
-    -o-animation: cssload-rot 6.9s linear infinite;
-    -ms-animation: cssload-rot 6.9s linear infinite;
-    -webkit-animation: cssload-rot 6.9s linear infinite;
-    -moz-animation: cssload-rot 6.9s linear infinite;
-}
-.cssload-block:nth-child(9) {
-    animation-delay:28.75s;
-    -o-animation-delay:28.75s;
-    -ms-animation-delay:28.75s;
-    -webkit-animation-delay:28.75s;
-    -moz-animation-delay:28.75s;
-    animation: cssload-rot 9.2s linear infinite;
-    -o-animation: cssload-rot 9.2s linear infinite;
-    -ms-animation: cssload-rot 9.2s linear infinite;
-    -webkit-animation: cssload-rot 9.2s linear infinite;
-    -moz-animation: cssload-rot 9.2s linear infinite;
+.cssload-container{
+  display: block;
+  margin:49px auto;
+  width:97px;
 }
 
-
-@keyframes cssload-rot {
-    0% {
-        transform:none;
-    }
-    20% {
-        transform:rotateZ(-90deg) rotateY(180deg);
-    }
-    40% {
-        background:rgb(210,105,30);
-        transform:none;
-    }
-    60% {
-        background:rgb(255,255,255);
-    }
-    80% {
-        background:rgb(100,149,237);
-    }
-    90% {
-        transform:none;
-        background:rgb(34,34,34);
-    }
+.cssload-loading i{
+  width: 19px;
+  height: 19px;
+  display: inline-block;
+  border-radius: 50%;
+  background: rgb(0,179,213);
 }
-
-@-o-keyframes cssload-rot {
-    0% {
-        -o-transform:none;
-    }
-    20% {
-        -o-transform:rotateZ(-90deg) rotateY(180deg);
-    }
-    40% {
-        background:rgb(210,105,30);
-        -o-transform:none;
-    }
-    60% {
-        background:rgb(255,255,255);
-    }
-    80% {
-        background:rgb(100,149,237);
-    }
-    90% {
-        -o-transform:none;
-        background:rgb(34,34,34);
-    }
-}
-
-@-ms-keyframes cssload-rot {
-    0% {
-        -ms-transform:none;
-    }
-    20% {
-        -ms-transform:rotateZ(-90deg) rotateY(180deg);
-    }
-    40% {
-        background:rgb(210,105,30);
-        -ms-transform:none;
-    }
-    60% {
-        background:rgb(255,255,255);
-    }
-    80% {
-        background:rgb(100,149,237);
-    }
-    90% {
-        -ms-transform:none;
-        background:rgb(34,34,34);
-    }
-}
-
-@-webkit-keyframes cssload-rot {
-    0% {
-        -webkit-transform:none;
-    }
-    20% {
-        -webkit-transform:rotateZ(-90deg) rotateY(180deg);
-    }
-    40% {
-        background:rgb(210,105,30);
-        -webkit-transform:none;
-    }
-    60% {
-        background:rgb(255,255,255);
-    }
-    80% {
-        background:rgb(100,149,237);
-    }
-    90% {
-        -webkit-transform:none;
-        background:rgb(34,34,34);
-    }
-}
-
-@-moz-keyframes cssload-rot {
-    0% {
-        -moz-transform:none;
-    }
-    20% {
-        -moz-transform:rotateZ(-90deg) rotateY(180deg);
-    }
-    40% {
-        background:rgb(210,105,30);
-        -moz-transform:none;
-    }
-    60% {
-        background:rgb(255,255,255);
-    }
-    80% {
-        background:rgb(100,149,237);
-    }
-    90% {
-        -moz-transform:none;
-        background:rgb(34,34,34);
-    }
-}
-}
-
-// 第二个
-.loader {
-  position: absolute;
-  left: 50%;
-  margin-left: -26.5px;
-  margin-top: -26.5px;
-}
-
-.square {
-  background: rgb(31,190,202);
-  width: 15px;
-  height: 15px;
-  float: left;
-  top: -10px;
-  margin-right: 5px;
-  margin-top: 5px;
-  position: relative;
+.cssload-loading i:first-child{
   opacity: 0;
-  animation: enter 6.9s infinite;
-    -o-animation: enter 6.9s infinite;
-    -ms-animation: enter 6.9s infinite;
-    -webkit-animation: enter 6.9s infinite;
-    -moz-animation: enter 6.9s infinite;
+  animation:cssload-loading-ani2 0.58s linear infinite;
+    -o-animation:cssload-loading-ani2 0.58s linear infinite;
+    -ms-animation:cssload-loading-ani2 0.58s linear infinite;
+    -webkit-animation:cssload-loading-ani2 0.58s linear infinite;
+    -moz-animation:cssload-loading-ani2 0.58s linear infinite;
+  transform:translate(-19px);
+    -o-transform:translate(-19px);
+    -ms-transform:translate(-19px);
+    -webkit-transform:translate(-19px);
+    -moz-transform:translate(-19px);
 }
-
-.enter {
-  top: 0px;
-  opacity: 1;
+.cssload-loading i:nth-child(2),
+.cssload-loading i:nth-child(3){
+  animation:cssload-loading-ani3 0.58s linear infinite;
+    -o-animation:cssload-loading-ani3 0.58s linear infinite;
+    -ms-animation:cssload-loading-ani3 0.58s linear infinite;
+    -webkit-animation:cssload-loading-ani3 0.58s linear infinite;
+    -moz-animation:cssload-loading-ani3 0.58s linear infinite;
 }
-
-.square:nth-child(1) {
-  animation-delay: 2.07s;
-    -o-animation-delay: 2.07s;
-    -ms-animation-delay: 2.07s;
-    -webkit-animation-delay: 2.07s;
-    -moz-animation-delay: 2.07s;
-}
-
-.square:nth-child(2) {
-  animation-delay: 2.42s;
-    -o-animation-delay: 2.42s;
-    -ms-animation-delay: 2.42s;
-    -webkit-animation-delay: 2.42s;
-    -moz-animation-delay: 2.42s;
-}
-
-.square:nth-child(3) {
-  animation-delay: 2.76s;
-    -o-animation-delay: 2.76s;
-    -ms-animation-delay: 2.76s;
-    -webkit-animation-delay: 2.76s;
-    -moz-animation-delay: 2.76s;
-  background: rgb(253,201,111);
-}
-
-.square:nth-child(4) {
-  animation-delay: 1.04s;
-    -o-animation-delay: 1.04s;
-    -ms-animation-delay: 1.04s;
-    -webkit-animation-delay: 1.04s;
-    -moz-animation-delay: 1.04s;
-  animation-delay: 1.04s;
-}
-
-.square:nth-child(5) {
-  animation-delay: 1.38s;
-    -o-animation-delay: 1.38s;
-    -ms-animation-delay: 1.38s;
-    -webkit-animation-delay: 1.38s;
-    -moz-animation-delay: 1.38s;
-  animation-delay: 1.38s;
-}
-
-.square:nth-child(6) {
-  animation-delay: 1.73s;
-    -o-animation-delay: 1.73s;
-    -ms-animation-delay: 1.73s;
-    -webkit-animation-delay: 1.73s;
-    -moz-animation-delay: 1.73s;
-  animation-delay: 1.73s;
-}
-
-.square:nth-child(8) {
-  animation-delay: 0.35s;
-    -o-animation-delay: 0.35s;
-    -ms-animation-delay: 0.35s;
-    -webkit-animation-delay: 0.35s;
-    -moz-animation-delay: 0.35s;
-  animation-delay: 0.35s;
-}
-
-.square:nth-child(9) {
-  animation-delay: 0.69s;
-    -o-animation-delay: 0.69s;
-    -ms-animation-delay: 0.69s;
-    -webkit-animation-delay: 0.69s;
-    -moz-animation-delay: 0.69s;
-  animation-delay: 0.69s;
-}
-
-.clear {
-  clear: both;
-}
-
-.last {
-  margin-right: 0;
+.cssload-loading i:last-child{
+  animation:cssload-loading-ani1 0.58s linear infinite;
+    -o-animation:cssload-loading-ani1 0.58s linear infinite;
+    -ms-animation:cssload-loading-ani1 0.58s linear infinite;
+    -webkit-animation:cssload-loading-ani1 0.58s linear infinite;
+    -moz-animation:cssload-loading-ani1 0.58s linear infinite;
 }
 
 
 
-@keyframes enter {
-  0% {
+
+@keyframes cssload-loading-ani1{
+  100%{
+    transform:translate(39px);
     opacity: 0;
-    top: -10px;
-  }
-  5% {
-    opacity: 1;
-    top: 0px;
-  }
-  50.9% {
-    opacity: 1;
-    top: 0px;
-  }
-  55.9% {
-    opacity: 0;
-    top: 10px;
   }
 }
 
-@-o-keyframes enter {
-  0% {
+@-o-keyframes cssload-loading-ani1{
+  100%{
+    -o-transform:translate(39px);
     opacity: 0;
-    top: -10px;
-  }
-  5% {
-    opacity: 1;
-    top: 0px;
-  }
-  50.9% {
-    opacity: 1;
-    top: 0px;
-  }
-  55.9% {
-    opacity: 0;
-    top: 10px;
   }
 }
 
-@-ms-keyframes enter {
-  0% {
+@-ms-keyframes cssload-loading-ani1{
+  100%{
+    -ms-transform:translate(39px);
     opacity: 0;
-    top: -10px;
-  }
-  5% {
-    opacity: 1;
-    top: 0px;
-  }
-  50.9% {
-    opacity: 1;
-    top: 0px;
-  }
-  55.9% {
-    opacity: 0;
-    top: 10px;
   }
 }
 
-@-webkit-keyframes enter {
-  0% {
+@-webkit-keyframes cssload-loading-ani1{
+  100%{
+    -webkit-transform:translate(39px);
     opacity: 0;
-    top: -10px;
-  }
-  5% {
-    opacity: 1;
-    top: 0px;
-  }
-  50.9% {
-    opacity: 1;
-    top: 0px;
-  }
-  55.9% {
-    opacity: 0;
-    top: 10px;
   }
 }
 
-@-moz-keyframes enter {
-  0% {
+@-moz-keyframes cssload-loading-ani1{
+  100%{
+    -moz-transform:translate(39px);
     opacity: 0;
-    top: -10px;
   }
-  5% {
+}
+
+@keyframes cssload-loading-ani2{
+  100%{
+    transform:translate(19px);
     opacity: 1;
-    top: 0px;
   }
-  50.9% {
+}
+
+@-o-keyframes cssload-loading-ani2{
+  100%{
+    -o-transform:translate(19px);
     opacity: 1;
-    top: 0px;
   }
-  55.9% {
-    opacity: 0;
-    top: 10px;
+}
+
+@-ms-keyframes cssload-loading-ani2{
+  100%{
+    -ms-transform:translate(19px);
+    opacity: 1;
   }
+}
+
+@-webkit-keyframes cssload-loading-ani2{
+  100%{
+    -webkit-transform:translate(19px);
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes cssload-loading-ani2{
+  100%{
+    -moz-transform:translate(19px);
+    opacity: 1;
+  }
+}
+
+@keyframes cssload-loading-ani3{
+  100%{
+    transform:translate(19px);
+  }
+}
+
+@-o-keyframes cssload-loading-ani3{
+  100%{
+    -o-transform:translate(19px);
+  }
+}
+
+@-ms-keyframes cssload-loading-ani3{
+  100%{
+    -ms-transform:translate(19px);
+  }
+}
+
+@-webkit-keyframes cssload-loading-ani3{
+  100%{
+    -webkit-transform:translate(19px);
+  }
+}
+
+@-moz-keyframes cssload-loading-ani3{
+  100%{
+    -moz-transform:translate(19px);
+  }
+}
 }
 </style>

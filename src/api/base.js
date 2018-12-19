@@ -12,7 +12,7 @@ class Base {
    */
   request(param) {
      let headers = this.headers;
-     let url = "/api" + param.url;
+     let url = param.url;
      if(!param.type){
        param.type = "POST";
      }
@@ -27,15 +27,12 @@ class Base {
           if(res.status == 900000){
             resolve(res);
           }else{
-            reject();
+            reject(res);
           }
         },
         fail: (err) => {
           console.log(err);
-          reject();
-        },
-        err: () => {
-          console.log(9090)
+          reject(err);
         }
        })
      })

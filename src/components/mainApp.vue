@@ -13,7 +13,8 @@
         <span>{{roundLevel}}</span>
       </div>
       <div class="audioBtn radiusBtn">
-        <img src="../assets/img/happyIdiom/happyIdiom-main-audio.png">
+        <img src="../assets/img/happyIdiom/happyIdiom-main-audio.png" v-show="!sudioClsoe" v-on:click="closeSudioFn">
+        <img src="../assets/img/happyIdiom/happyIdiom-main-audioUn.png" v-show="sudioClsoe" v-on:click="openSudioFn">
       </div>
     </div>
     <div class="content">
@@ -41,7 +42,7 @@
       <div class="elasticFrame">
         <img src="../assets/img/happyIdiom/idiom-return-close.png" />
         <div class="buttonBottom">
-          <img src="../assets/img/happyIdiom/idiom-return-y-b.png" v-on:click="exitGameBtn"/>
+          <img src="../assets/img/happyIdiom/idiom-return-y-b.png" v-on:click="exitGameBtnByGameSuccess"/>
           <img src="../assets/img/happyIdiom/idiom-return-n-b.png" v-on:click="cancelExit" />
         </div>
       </div>
@@ -82,35 +83,49 @@
     </div>
 
     <!-- 单词解释 -->
-    <div class="explainList" v-show="explainListShow">
+    <div class="explainList" v-bind:class="{showexplainList:explainListShow}">
        <img class="explainListBg" src="../assets/img/happyIdiom/happyIdiom-start-bg.png" />
        <div class="return radiusBtn" v-on:click="returnMian">
         <img src="../assets/img/happyIdiom/happyIdiom-main-return.png" />
        </div>
-       <div class="list">
-         <div v-for="item in idiomList">
+       <div class="list" ref="listS">
+        <div class="contentD">
+          <div v-for="item in idiomList">
            <div class="idiomName">{{item.idiomName}}</div>
            <div>{{item.idiomContent}}</div>
            <div>{{item.idiomDerivation}}</div>
          </div>
+        </div>
+         
        </div>
     </div>
+
+    <!-- 音频 -->
+    <div class="audioS" style="display: none;">
+    <audio preload='auto' src='/assets/img/happyIdiom/audio/click.mp3'  controls='controls' id="clickAudio"></audio>
+    <audio preload='auto' src='/assets/img/happyIdiom/audio/getGood.mp3'  controls='controls' id="getGoodAudio"></audio>
+    <audio preload='auto' src='/assets/img/happyIdiom/audio/death.mp3'  controls='controls' id="errAudio"></audio>
+    </div>
+
+    <mesg ref="mesg" v-bind:msg="msg"></mesg>
   </div>
 </template>
 
 <script>
+import mesg from './mesg';
 import $ from 'jquery';
 import {Api} from '../api/api.js'
-
+import Bscroll from 'better-scroll'
 const api = new Api();
 
 export default {
   name: 'mianApp',
-  props: {
-    msg: String
-  },
+  components:{
+        mesg
+    },
   data () {
     return {
+      msg: "",
       constant: true,
       textArry:[],
       idiomNum: [],
@@ -132,12 +147,30 @@ export default {
       nextData: {},  // 下一关数据
       pkLogId: 0,
       roundLevel:1,   // 关数
+      sudioClsoe: false
     }
   },
   created(){
       this.pkLogId = this.$route.params.pkLogId || 0;
       this.judgeLevel();  // 判断等级
       this.getData();   // 获取数据
+      this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new Bscroll(this.$refs.listS, {
+                click: true,
+                scrollY: true,
+                stopPropagation: true,
+                // bounce: {
+                //   top: false,
+                //   bottom: false,
+                //   left: false,
+                //   right: false 
+                // }
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
   },
   methods: {
     getData() {
@@ -158,7 +191,7 @@ export default {
         this.idiomList.push(...data.idiomList);
        })
        .catch(()=>{
-        console.log(5555)
+         this.getData();
        });
        
     },
@@ -179,6 +212,7 @@ export default {
           console.log("循环完成");
           this.textArry.push(...allArr);
           this.countdown();
+           
         }
       }
     },
@@ -226,6 +260,7 @@ export default {
     },
     fillInBox(item) {
       console.log("点击");
+      this.clickAudio();
       this.clickIndex +=1;
       item.clickIndex = this.clickIndex;
       this.idiomText.get(this.fillInBoxIndex).push(item.text);
@@ -301,7 +336,6 @@ export default {
     },
     showEnevlBox(){
       this.getRewardNum();
-      
     },
     exitGameBtn(){
       this.$router.push('/start');
@@ -319,6 +353,7 @@ export default {
     },
     clickShowExplainList(){
       this.explainListShow = true;
+      this.scroll.refresh();
     },
     returnMian() {
       this.explainListShow = false;
@@ -336,25 +371,32 @@ export default {
       this.setNextData(this.nextData)   // 获取数据
     },
     setNextData(res) {
-       let data = res.params
-        this.setData(data.idiomCharArray);
-        this.time = data.limitTime;
-        this.roundLevel = data.roundLevel;
-        // 设置输入框
-        let len = data.idiomCount;
-        for(let i = 0; i < len; i++){
-         this.idiomText.set(i+1,[]);
+        if(res){
+          let data = res.params
+          this.setData(data.idiomCharArray);
+          this.time = data.limitTime;
+          this.roundLevel = data.roundLevel;
+          // 设置输入框
+          let len = data.idiomCount;
+          for(let i = 0; i < len; i++){
+           this.idiomText.set(i+1,[]);
+          }
+          // 设置正确答案
+          this.setDataTrue(data.idiomList);
+          // 解释
+          this.idiomList.push(...data.idiomList);
+        }else{
+          this.msg = "正在获取数据";
+          this.$refs.mesg.showAnimate();
+          setNextData(res);
         }
-        // 设置正确答案
-        this.setDataTrue(data.idiomList);
-        // 解释
-        this.idiomList.push(...data.idiomList);
+        
     },
     getNextData() {
       api.getNextIdiomList(this.pkLogId).then((res) => {
         this.nextData = res;
       }).catch(()=>{
-        console.log(5555)
+        this.getNextData();
        });
     },
     claerAllData() {
@@ -387,7 +429,7 @@ export default {
           this.gameOverShow = true;
         }
       }).catch(() => {
-          console.log("是啊比");
+         this.gameOverShow = true;
       })
     },
     getRewardNum() {
@@ -395,8 +437,10 @@ export default {
       api.getReward(this.pkLogId).then((res) => {
           this.rewardNum = res.params.rewardAmount;
           this.isShowAnmate = true;
-      }).catch(() => {
-        console.log("获取失败");
+      }).catch((res) => {
+         this.msg = res.message || "红包失效";
+         this.$refs.mesg.showAnimate();
+         this.enevlBoxShow = false;
       })
     },
     gameOverShowByenevlBox() {
@@ -407,21 +451,62 @@ export default {
       api.setFinishGame(this.pkLogId).then((res) => {
          this.exitGameBtn();
       }).catch(() => {
-          console.log("是啊比");
-      })
+         this.msg = "游戏结束失败";
+         this.$refs.mesg.showAnimate();
+         setTimeout(()=>{
+          this.exitGameBtn();
+         },600);
+      });
+    },
+    clickAudio(){
+        var clickaudio = document.getElementById('clickAudio');
+        if(this.sudioClsoe){
+
+        }else{
+            clickaudio.currentTime = 0;
+            clickaudio.play();
+        }
+
+    },
+    getGoodAudio() {
+        var clickaudio = document.getElementById('getGoodAudio');
+        if(this.sudioClsoe){
+
+        }else {
+            clickaudio.currentTime = 0;
+            clickaudio.play();
+        }
+    },
+    errAudio() {
+        var clickaudio = document.getElementById('errAudio');
+        if(this.sudioClsoe){
+
+        }else {
+            clickaudio.currentTime = 0;
+            clickaudio.play();
+        }
+    },
+    closeSudioFn() {
+      this.sudioClsoe = true;
+    },
+    openSudioFn(){
+      this.sudioClsoe = false;
     }
+
   },
   watch:{
     time(val,oldVal) {
       console.log(val,oldVal);
       if(val == 0){
+        this.errAudio();
         this.gameOverApi(this.pkLogId);
         this.exit = false;
       }
     },
     trueNum(val,oldVal) {
-      if(val == 4){
+      if(val == this.idiomNum.length){
         clearInterval(this.timer);
+        this.getGoodAudio();
         this.gameSuccessShow = true;
         this.getNextData();
       }
@@ -442,7 +527,7 @@ $color : red;
   top: 0;
   bottom: 0;
   left: 0;
-}
+
 .boxM{
   position: absolute;
   width: 100%;
@@ -701,7 +786,6 @@ $color : red;
 }
 /*红包*/
 .enevlBox{
-
   position: fixed;
   top: 0;
   bottom: 0;
@@ -717,6 +801,8 @@ $color : red;
     position: absolute;
     width: rem(576rem);
     height: rem(719rem);
+    top: 50%;
+    margin-top: - rem(359rem);
     transform: scale(1);
     transition: all 0.5s;
   }
@@ -768,6 +854,7 @@ $color : red;
 }
 
 // 单词解释
+
 .explainList{
   position:absolute;
   top: 0;
@@ -775,6 +862,8 @@ $color : red;
   width: 100%;
   z-index: 9999;
   background-color:#ffffff;
+      z-index: -99;
+      opacity: 0;
   .explainListBg{
     position:absolute;
     width: 100%;
@@ -800,11 +889,10 @@ $color : red;
     width: 100%;
     top: rem(140rem);
     bottom: rem(20rem);
-    
-    
     overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    >div{
+    .contentD{
+      width: 100%;
+      >div{
       padding: rem(24rem);
       width: rem(696rem);
       box-sizing: border-box;
@@ -824,6 +912,13 @@ $color : red;
         line-height: rem(40rem);
       }
     }
+    }
+    
   }
+}
+.showexplainList{
+      z-index: 9999;
+      opacity: 1;
+}
 }
 </style>

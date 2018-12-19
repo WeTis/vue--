@@ -12,43 +12,66 @@
                 <input type="text" v-model="phoneNumber" name="" value="" placeholder="请输入手机号" @keyup.enter="searchFriends" />
                 <img src="../assets/img/happyIdiom/happyIdiom_addFriends_close.png" class="closeicon" v-on:click="clear"/>
             </div>
-            <div class="textBtn">取消</div>
+            <div class="textBtn" v-on:click="searchFriends">搜索</div>
         </div>
-        <div class="friendsList">
-            <ul>
-                <li v-for="item in friendList">
-                    <div class="item">
-                        <img v-bind:src="item.matchHeadImage" class="headImg" />
-                        <div class="name">{{item.matchName}}</div>
-                        <div class="addBtn" v-on:click="addFrinedsTogame(item.matchId)">添加</div>
-                    </div>
-                </li>
-            </ul>
+        <div class="friendsList" ref="friendsList">
+            <div class="contents">
+                <ul>
+                    <li v-for="item in friendList">
+                        <div class="item">
+                            <img v-bind:src="item.matchHeadImage" class="headImg" />
+                            <div class="name">{{item.matchName}}</div>
+                            <div class="addBtn" v-on:click="addFrinedsTogame(item.matchId)">添加</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
+        <mesg ref="mesg" v-bind:msg="msg"></mesg>
     </div>
 </template>
 
 <script>
+import mesg from './mesg';
 import $ from 'jquery';
 import {Api} from '../api/api.js'
-
+import Bscroll from 'better-scroll'
 const api = new Api();
 
 export default {
     name: 'addFriend',
-    props: {
-        msg: String
+    components:{
+        mesg
     },
     data () {
         return {
             phoneNumber: '',
             friendList:[],
-            difficultyLevel: 0
+            difficultyLevel: 0,
+            showHide: false,
+            msg: ""
         }
     },
     created() {
         this.difficultyLevel = this.$route.params.spellLevel;  // 获取pk难度
         this.getData();
+        this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new Bscroll(this.$refs.friendsList, {
+                click: true,
+                scrollY: true,
+                stopPropagation: true,
+                bounce: {
+                  top: false,
+                  bottom: false,
+                  left: false,
+                  right: false 
+                }
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
     },
     methods: {
         getData() {
@@ -56,7 +79,8 @@ export default {
             let data = res.params.historyMatchList;
             this.friendList.push(...data);
           }).catch((res) => {
-
+            this.msg = res.message;
+            this.$refs.mesg.showAnimate();
           });
         },
         addFrinedsTogame(id){
@@ -68,7 +92,8 @@ export default {
                }
              });
           }).catch((res) => {
-
+             this.msg = res.message;
+             this.$refs.mesg.showAnimate();
           });
         },
         clickReturn(){
@@ -78,12 +103,13 @@ export default {
         },
         searchFriends() {
             console.log(this.phoneNumber);
+            this.friendList = [];
             api.searchGoodFriends(this.phoneNumber).then((res) => {
                  let data = res.params;
                  this.friendList.push(data);
-                 console.log("获取成");
-            }).catch(() => {
-console.log("获取shibai");
+            }).catch((res) => {
+               this.msg = res.message;
+               this.$refs.mesg.showAnimate();
             })
         },
         clear() {

@@ -9,7 +9,7 @@ import gameRecord from './components/gameRecord'
 import rankingList from './components/rankingList'
 import friendsPK from './components/friendsPK'
 import addFriend from './components/addFriend'
-
+import { Config } from './api/config.js'
 Vue.config.productionTip = false
 
 FastClick.attach(document.body);
@@ -64,6 +64,7 @@ new Vue({
     }
   },
   created(){
+    Config.headers.Authorization = this.hrefParam("Authorization").split('#/')[0];
     this.$router.push('/load');
     this.compterHtmlSize();
     this.listenScreenZoom();
@@ -92,8 +93,47 @@ new Vue({
     },
     listenScreenZoom(){
       window.onresize=() => {  
-         this.compterHtmlSize();
-      }  
+        if(this.onsize != window.orientation)
+        {
+          console.log("旋转")
+          this.onsize = window.orientation;
+          this.compterHtmlSize();
+        }
+             // this.compterHtmlSize();
+      } 
+    },
+    hrefParam(paramName){
+        var reParamValue = '';
+        var href = window.location.href;
+        // 获取所有参数
+        var paramString = href.split('?')[1];
+        // 判断参数是否存在】
+        if(paramString){
+            // 拆分所有参数
+            var paramArr = paramString.split("&");
+            // 设置参数数组对象
+            var paramArrObj = [];
+            // 循环参数取出对应的参数
+            for(var i = 0; i < paramArr.length; i++){
+                var name = decodeURI(paramArr[i].split('=')[0]);
+                var value =decodeURI(paramArr[i].split('=')[1]);
+                paramArrObj.push({
+                    name: name,
+                    value: value
+                })
+            }
+            // 遍历数组查询对应数据
+            for(var j = 0; j < paramArrObj.length; j++){
+                if(paramArrObj[j].name === paramName)
+                {
+                    reParamValue = paramArrObj[j].value;
+                    break;
+                }
+            }
+
+            return reParamValue;
+        }
+       return false;
     }
   }
 }).$mount('#app')

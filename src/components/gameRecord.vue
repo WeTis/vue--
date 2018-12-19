@@ -9,11 +9,12 @@
             </div>
             <div class="title">奖励记录</div>
         </div>
-        <div class="gameRecordList">
-            <div class="item" v-for="item in gameRecordList">
+        <div class="gameRecordList" ref="wrapperG">
+            <div class="contentS">
+                <div class="item" v-for="item in gameRecordList">
                 <div class="headImg">
                     <img src="../assets/img/happyIdiom/happyIdiom-record-j.png" />
-                    <div class="type">简单模式</div>
+                    <div class="type">奖励记录</div>
                 </div>
                 <div class="mainText">
                     <img v-bind:src="item.userHeadImage" />
@@ -27,6 +28,8 @@
                     </div>
                 </div>
             </div>
+            </div>
+            
         </div>
     </div>
 </template>
@@ -34,6 +37,7 @@
 <script>
 import $ from 'jquery';
 import {Api} from '../api/api.js'
+import Bscroll from 'better-scroll'
 
 const api = new Api();
 
@@ -49,6 +53,23 @@ export default {
     },
     created(){
      this.gameRecordListData();
+     this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new Bscroll(this.$refs.wrapperG, {
+                click: true,
+                scrollY: true,
+                stopPropagation: true,
+                bounce: {
+                  top: false,
+                  bottom: false,
+                  left: false,
+                  right: false 
+                }
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
     },
     methods: {
         clickReturn(){
@@ -73,7 +94,7 @@ export default {
             let h = date.getHours() + ':';
             let m = date.getMinutes() + ':';
             let s = date.getSeconds();
-            return Y+M+D;
+            return Y+M+D+h+m+s;
         }
     }
 }
@@ -83,6 +104,17 @@ export default {
 $color : red;
 @function rem($n) {
     @return $n/2/37.5;
+}
+#GameRecord{
+    position:fixed;
+    top: 0;
+    bottom:0;
+    width: 100%;
+     overflow: hidden;
+    // -webkit-overflow-scrolling: touch;
+    .contentS{
+        padding-top: rem(40rem);
+    }
 }
 .topNav{
     width: 100%;
