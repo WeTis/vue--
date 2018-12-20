@@ -52,7 +52,8 @@ export default {
             msg: ""
         }
     },
-    created() {
+    activated() {
+        this.clearData();
         this.difficultyLevel = this.$route.params.spellLevel;  // 获取pk难度
         this.getData();
         this.$nextTick(() => {
@@ -114,6 +115,13 @@ export default {
         },
         clear() {
             this.phoneNumber = '';
+        },
+        clearData(){
+            this.phoneNumber = '';
+            this.friendList =[];
+            this.difficultyLevel = 0;
+            this.showHide = false;
+            this.msg = "";
         }
     }
 }
@@ -125,7 +133,7 @@ $color : red;
     @return $n/2/37.5;
 }
 #addFriend{
-    position: fixed;
+    position: absolute;
     top: 0;
     bottom:0;
     width: 100%;

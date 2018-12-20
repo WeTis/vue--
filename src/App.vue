@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="wrapperS" ref="wrapperS">
-    <!-- 干啥沙发舒服哈咖啡暗示法哈萨克发哈是开发哈萨克发哈是开发还是法师法师开发部署FFH开发HKFKFH开发F发返回FEF而非FJoFH播放，C, -->
-    <!-- <Start></Start> -->
     <div class="content">
       <transition name="fade">
-        <router-view></router-view>
+        <keep-alive >
+        <router-view class="page"></router-view>
+      </keep-alive>
       </transition>
     </div>
   </div>
@@ -23,11 +23,10 @@ export default {
   },
   created() {
         this.checkPhone();
+        console.log("mainApp")
     },
     methods:{
    loadData() {
-          // this.data = res.data.concat(this.data)
-          console.log("进入pk页面");
           this.$nextTick(() => {
             if (!this.scroll) {
               this.scroll = new Bscroll(this.$refs.wrapperS, {
@@ -141,8 +140,18 @@ html{
     width: 100%;
   }
 }
+.page {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    margin: 0 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
 .fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity .6s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;

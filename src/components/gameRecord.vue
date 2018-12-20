@@ -52,8 +52,31 @@ export default {
         }
     },
     created(){
-     this.gameRecordListData();
-     this.$nextTick(() => {
+        console.log("GameRecord")
+     // this.gameRecordListData();
+     // this.$nextTick(() => {
+     //        if (!this.scroll) {
+     //          this.scroll = new Bscroll(this.$refs.wrapperG, {
+     //            click: true,
+     //            scrollY: true,
+     //            stopPropagation: true,
+     //            bounce: {
+     //              top: false,
+     //              bottom: false,
+     //              left: false,
+     //              right: false 
+     //            }
+     //          })
+     //        } else {
+     //          this.scroll.refresh()
+     //        }
+     //      })
+    },
+    activated(){
+      this.gameRecordList = [];
+      console.log("贾爱爱吹牛");
+      this.gameRecordListData();
+      this.$nextTick(() => {
             if (!this.scroll) {
               this.scroll = new Bscroll(this.$refs.wrapperG, {
                 click: true,
@@ -70,6 +93,9 @@ export default {
               this.scroll.refresh()
             }
           })
+    },
+    deactivated(){
+      console.log("hsdasd")
     },
     methods: {
         clickReturn(){
@@ -106,7 +132,7 @@ $color : red;
     @return $n/2/37.5;
 }
 #GameRecord{
-    position:fixed;
+    position:absolute;
     top: 0;
     bottom:0;
     width: 100%;

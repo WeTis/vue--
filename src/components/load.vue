@@ -122,7 +122,7 @@ export default {
 
 <style scoped lang="scss">
 #load{
-   position: fixed;
+   position: absolute;
    top: 0;
    bottom: 0;
    width: 100%;

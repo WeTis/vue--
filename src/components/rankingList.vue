@@ -14,12 +14,12 @@
       <div class="rankingNum"><span>{{topData.todayRank < 101 ? topData.todayRank : ""}}</span>{{topData.todayRank >= 100  ? "暂无排" : ""}}名</div>
       <div class="results">
         <div class="yesterday">
-          昨日排行
-          <span>{{topData.yesterdayPassLevel}}</span>
+          昨日最佳
+          <span>{{topData.yesterdayPassLevel}}</span> 关
         </div>
         <div class="history">
           历史最佳
-          <span>{{topData.bestPassLevel}}</span>
+          <span>{{topData.bestPassLevel}}</span> 关
         </div>
       </div>
     </div>
@@ -89,9 +89,15 @@ export default {
       rewardNum: 0,
       isShowAnmate: false,
       showEnvelImg: false,
+      msg: ""
     }
   },
-  created(){
+  activated(){
+     this.active = true;
+     this.showEnvelImg = false;
+     this.todayRankList = [];
+     this.nowList = [];
+
      this.getRankingListData();
      this.$nextTick(() => {
             if (!this.scroll) {
@@ -172,7 +178,6 @@ export default {
     showEnevlBox() {
       api.getReward().then((res) => {
           this.rewardNum = res.params.rewardAmount;
-          this.friendsPKList[this.indexfriendsPKList].rewardValidStatus = 1;
           this.isShowAnmate = true;
         }).catch(() => {
             console.log("是吧");
@@ -195,7 +200,7 @@ $color : red;
   @return $n/2/37.5;
 }
 #rankingList{
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   width: 100%;

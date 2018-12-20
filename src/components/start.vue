@@ -39,8 +39,9 @@ export default {
       isAndroid: false
     }
   },
- created() {
+  created() {
     this.checkPhone();
+    console.log("sash")
   },
   methods: {
      jumpToMainApp(n) {
@@ -94,7 +95,7 @@ $color : red;
   @return $n/2/37.5;
 }
 #start{
-  position: fixed;
+  position: absolute;
   width: 100%;
   top: 0;
   bottom: 0;

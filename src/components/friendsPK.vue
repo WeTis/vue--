@@ -63,6 +63,9 @@
                                     <div class="btn envelBtned" v-if="userId == item.winnerId  && item.rewardValidStatus == 1"  >
                                       已领取
                                     </div>
+                                    <div class="btn" v-if="userId == item.winnerId  && ( item.rewardValidStatus == 2 || item.rewardValidStatus == 0)" >
+                                      胜出
+                                    </div>
                                 </div>
                                 <div class="right" v-if="userId == item.recipientId">
                                      <div class="headImg">
@@ -79,6 +82,9 @@
                                     </div>
                                     <div class="btn envelBtned" v-if="userId == item.winnerId  && item.rewardValidStatus == 1" >
                                       已领取
+                                    </div>
+                                    <div class="btn" v-if="userId == item.winnerId  && ( item.rewardValidStatus == 2 || item.rewardValidStatus == 0)" >
+                                      胜出
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +147,8 @@ export default {
           pullingUpStatus: false
         }
     },
-    created() {
+    activated() {
+        this.clearData();
         this.active = this.$route.params.spellLevel || 1;
         this.getDataList();
         this.loadData();
@@ -292,6 +299,25 @@ export default {
         this.pageNum = 1;
         this.friendsPKList = [];
         this.getDataList();
+      },
+      clearData(){
+          this.pulldownMsg = "下拉刷新";
+          this.pullupMsg = "加载更多";
+          this.pulldownShow = false;
+          this.items = 10;
+          this.active = 1;
+          this.userId = 0;
+          this.friendsPKList = [];
+          this.ordinaryList = [];
+          this.simpleList = [];
+          this.difficultList = [];
+          this.enevlBoxShow = false;
+          this.isShowAnmate = false;
+          this.rewardNum = 0;
+          this.indexfriendsPKList = 0;
+          this.pkLogId = 0;
+          this.pageNum = 1;
+          this.pullingUpStatus = false;
       }
 
     }

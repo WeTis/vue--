@@ -150,7 +150,14 @@ export default {
       sudioClsoe: false
     }
   },
-  created(){
+  activated(){
+      this.pkLogId = 0;
+      this.roundLevel = 1;
+      this.rewardNum = 0;
+      this.nextData = {};
+      
+      clearInterval(this.timer);
+      this.claerAllData();
       this.pkLogId = this.$route.params.pkLogId || 0;
       this.judgeLevel();  // 判断等级
       this.getData();   // 获取数据
@@ -171,6 +178,9 @@ export default {
               this.scroll.refresh()
             }
           })
+  },
+  beforeRouteUpdate (to, from, next) {
+    console.log("触发这个歌方法")
   },
   methods: {
     getData() {
@@ -371,7 +381,7 @@ export default {
       this.setNextData(this.nextData)   // 获取数据
     },
     setNextData(res) {
-        if(res){
+        if(res.params.idiomList.length > 0){
           let data = res.params
           this.setData(data.idiomCharArray);
           this.time = data.limitTime;
@@ -388,7 +398,7 @@ export default {
         }else{
           this.msg = "正在获取数据";
           this.$refs.mesg.showAnimate();
-          setNextData(res);
+          setNextData(this.nextData);
         }
         
     },
@@ -455,7 +465,7 @@ export default {
          this.$refs.mesg.showAnimate();
          setTimeout(()=>{
           this.exitGameBtn();
-         },600);
+         },300);
       });
     },
     clickAudio(){
@@ -522,7 +532,7 @@ $color : red;
   @return $n/2/37.5;
 }
 #mianApp{
-  position: fixed;
+  position: absolute;
   width: 100%;
   top: 0;
   bottom: 0;
