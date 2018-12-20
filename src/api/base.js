@@ -12,7 +12,7 @@ class Base {
    */
   request(param) {
      let headers = this.headers;
-     let url = param.url;
+     let url = "/api" + param.url;
      if(!param.type){
        param.type = "POST";
      }
@@ -23,6 +23,7 @@ class Base {
         type:param.type,
         data:param.data,
         dataType: "json",
+        timeout: 10000,
         success: (res) => {
           if(res.status == 900000){
             resolve(res);
@@ -33,6 +34,10 @@ class Base {
         fail: (err) => {
           console.log(err);
           reject(err);
+        },
+        error: () => {
+          reject();
+          console.log("chaoshi");
         }
        })
      })

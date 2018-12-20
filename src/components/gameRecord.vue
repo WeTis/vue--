@@ -31,6 +31,7 @@
             </div>
             
         </div>
+        <mesg ref="mesg" v-bind:msg="msg"></mesg>
     </div>
 </template>
 
@@ -38,39 +39,22 @@
 import $ from 'jquery';
 import {Api} from '../api/api.js'
 import Bscroll from 'better-scroll'
-
+import mesg from './mesg';
 const api = new Api();
 
 export default {
     name: 'GameRecord',
-    props: {
-        msg: String
+    components:{
+        mesg
     },
     data () {
         return {
+            msg: "",
             gameRecordList: []
         }
     },
     created(){
-        console.log("GameRecord")
-     // this.gameRecordListData();
-     // this.$nextTick(() => {
-     //        if (!this.scroll) {
-     //          this.scroll = new Bscroll(this.$refs.wrapperG, {
-     //            click: true,
-     //            scrollY: true,
-     //            stopPropagation: true,
-     //            bounce: {
-     //              top: false,
-     //              bottom: false,
-     //              left: false,
-     //              right: false 
-     //            }
-     //          })
-     //        } else {
-     //          this.scroll.refresh()
-     //        }
-     //      })
+        console.log("GameRecord");
     },
     activated(){
       this.gameRecordList = [];
@@ -104,12 +88,18 @@ export default {
           });
         },
         gameRecordListData() {
+            this.msg = "正在获取数据";
+            this.$refs.mesg.showAnimate();
+
             api.getUserRewardList().then((res) => {
               let arr = res.params.rewardLogList;
               console.log(arr);
               this.gameRecordList.push(...arr);
+              this.$refs.mesg.hideAnimate();
             }).catch(() => {
                console.log("获取失败");
+               this.msg = "获取失败,请返回重试";
+               this.$refs.mesg.showAnimate(5000);
             })
         },
         changeTime(time) {

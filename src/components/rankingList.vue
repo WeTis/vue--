@@ -128,20 +128,25 @@ export default {
       if(this.nowList.length > 0) {
          this.todayRankList.push(...this.nowList)
       }else{
+        this.msg = "正在获取数据";
+        this.$refs.mesg.showAnimate();
+
         api.getUserRank().then((res) => {
-        let data = res.params;
-        if(data.rewardStatus == 1){
+          let data = res.params;
+          if(data.rewardStatus == 1){
             this.showEnvelImg = true;
-        };
-         this.topData = {
+          };
+          this.topData = {
            bestPassLevel: data.bestPassLevel,
            todayRank: data.todayRank,
            yesterdayPassLevel: data.yesterdayPassLevel
-         };
-         this.nowList.push(...data.todayRankList);
-         this.todayRankList.push(...data.todayRankList);
+           };
+           this.nowList.push(...data.todayRankList);
+           this.todayRankList.push(...data.todayRankList);
+           this.$refs.mesg.hideAnimate();
         }).catch(() => {
-
+           this.msg = "获取失败,请返回重试";
+           this.$refs.mesg.showAnimate(5000);
         })
       }
       
@@ -151,12 +156,17 @@ export default {
       if(this.historyList.length > 0){
         this.todayRankList.push(...this.historyList)
       }else{
+        this.msg = "正在获取数据";
+        this.$refs.mesg.showAnimate();
+
         api.getUserYesterdayRank().then((res) => {
           let data = res.params;
         this.historyList.push(...data.yesterdayRankList);
         this.todayRankList.push(...data.yesterdayRankList);
+        this.$refs.mesg.hideAnimate();
         }).catch(() => {
-
+           this.msg = "获取失败,请返回重试";
+           this.$refs.mesg.showAnimate(5000);
         })
       }
       

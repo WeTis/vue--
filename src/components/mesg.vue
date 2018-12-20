@@ -20,12 +20,17 @@ export default {
     console.log(this.showHide)
   },
   methods: {
-    showAnimate() {
+    showAnimate(time) {
+      let times = time || 1000;
       clearTimeout(this.timer);
       this.showHide = true;
       this.timer = setTimeout(() => {
         this.showHide = false;
-      },1000);
+      },times);
+    },
+    hideAnimate() {
+      clearTimeout(this.timer);
+      this.showHide = false;
     }
   }
 }

@@ -147,7 +147,8 @@ export default {
       nextData: {},  // 下一关数据
       pkLogId: 0,
       roundLevel:1,   // 关数
-      sudioClsoe: false
+      sudioClsoe: false,
+      
     }
   },
   activated(){
