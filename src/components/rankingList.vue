@@ -97,7 +97,6 @@ export default {
      this.showEnvelImg = false;
      this.todayRankList = [];
      this.nowList = [];
-
      this.getRankingListData();
      this.$nextTick(() => {
             if (!this.scroll) {
@@ -115,7 +114,7 @@ export default {
             } else {
               this.scroll.refresh()
             }
-          })
+     })
   },
   methods: {
     clickReturn(){
@@ -144,9 +143,11 @@ export default {
            this.nowList.push(...data.todayRankList);
            this.todayRankList.push(...data.todayRankList);
            this.$refs.mesg.hideAnimate();
-        }).catch(() => {
-           this.msg = "获取失败,请返回重试";
-           this.$refs.mesg.showAnimate(5000);
+           this.$refs.mesg.hideerrorFn();
+        }).catch((err) => {
+            this.$refs.mesg.hideAnimate();
+            this.$refs.mesg.ShowerrorFn();
+            
         })
       }
       
@@ -161,12 +162,14 @@ export default {
 
         api.getUserYesterdayRank().then((res) => {
           let data = res.params;
-        this.historyList.push(...data.yesterdayRankList);
-        this.todayRankList.push(...data.yesterdayRankList);
-        this.$refs.mesg.hideAnimate();
-        }).catch(() => {
-           this.msg = "获取失败,请返回重试";
-           this.$refs.mesg.showAnimate(5000);
+          this.historyList.push(...data.yesterdayRankList);
+          this.todayRankList.push(...data.yesterdayRankList);
+          this.$refs.mesg.hideAnimate();
+         this.$refs.mesg.hideerrorFn();
+        }).catch((err) => {
+            this.$refs.mesg.hideAnimate();
+            this.$refs.mesg.ShowerrorFn();
+          
         })
       }
       
@@ -186,20 +189,61 @@ export default {
       this.enevlBoxShow = true;
     },
     showEnevlBox() {
+      this.msg = "正在获取红包";
+      this.$refs.mesg.showAnimate();
       api.getReward().then((res) => {
           this.rewardNum = res.params.rewardAmount;
           this.isShowAnmate = true;
-        }).catch(() => {
-            console.log("是吧");
-            this.msg = "红包已过期";
-            this.$refs.mesg.showAnimate();
-            this.enevlBoxShow = false;
+
+          this.$refs.mesg.hideAnimate();
+          this.$refs.mesg.hideerrorFn();
+
+        }).catch((err) => {
+          
+            this.$refs.mesg.hideAnimate();
+            if(err == "timeOut"){
+              this.$refs.mesg.ShowerrorFn();
+            }else{
+              this.msg = "红包已过期";
+              this.$refs.mesg.showAnimate(2000);
+              this.enevlBoxShow = false;
+            }
         });
     },
     hideEnvel() {
         this.enevlBoxShow = false;
         this.isShowAnmate = false;
       },
+    replaceGetParent() {
+      this.active = true;
+      this.topData = {};
+      this.todayRankList = [];
+      this.historyList = [];
+      this.nowList = [];
+      this.enevlBoxShow = false;
+      this.rewardNum = 0;
+      this.isShowAnmate = false;
+      this.showEnvelImg = false;
+      this.msg = "";
+      this.getRankingListData();
+      this.$nextTick(() => {
+        if (!this.scroll) {
+          this.scroll = new Bscroll(this.$refs.listS, {
+            click: true,
+            scrollY: true,
+            stopPropagation: true,
+            bounce: {
+              top: false,
+              bottom: false,
+              left: false,
+              right: false 
+            }
+          })
+        } else {
+          this.scroll.refresh()
+        }
+      })
+    }
   }
 }
 </script>

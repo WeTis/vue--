@@ -110,6 +110,7 @@
             </div>
           </div>
         </div>
+        <mesg ref="mesg" v-bind:msg="msg"></mesg>
     </div>
 </template>
 
@@ -117,17 +118,19 @@
 import $ from 'jquery';
 import {Api} from '../api/api.js'
 import Bscroll from 'better-scroll'
+import mesg from './mesg';
 
 const api = new Api();
 let timer = null;
 
 export default {
     name: 'friendsPK',
-    props: {
-        msg: String
+    components:{
+        mesg
     },
     data () {
         return {
+          msg: "",
           pulldownMsg: "下拉刷新",
           pullupMsg: "加载更多",
           pulldownShow: false,
@@ -155,13 +158,20 @@ export default {
     },
     methods: {
       getDataList() {
+        this.msg = "正在获取数据";
+        this.$refs.mesg.showAnimate();
+
         api.getPKList(this.active,1).then((res) => {
           let data = res.params;
           this.userId = data.userSelfId;
           this.friendsPKList.push(...data.pkList);
           this.scroll.refresh();
-        }).catch(() => {
+          this.$refs.mesg.hideAnimate();
+          this.$refs.mesg.hideerrorFn();
 
+        }).catch((err) => {
+            this.$refs.mesg.hideAnimate();
+            this.$refs.mesg.ShowerrorFn();
         })
       },
       setData(data) {
@@ -205,13 +215,26 @@ export default {
         this.pkLogId = pkLogId;
       },
       showEnevlBox(){
-        console.log(this.pkLogId);
+        this.msg = "正在获取红包";
+        this.$refs.mesg.showAnimate();
+
         api.getReward(this.pkLogId).then((res) => {
           this.rewardNum = res.params.rewardAmount;
           this.friendsPKList[this.indexfriendsPKList].rewardValidStatus = 1;
           this.isShowAnmate = true;
-        }).catch(() => {
-            console.log("是吧")
+
+          this.$refs.mesg.hideAnimate();
+          this.$refs.mesg.hideerrorFn();
+          
+        }).catch((err) => {
+            this.$refs.mesg.hideAnimate();
+            if(err == "timeOut"){
+              this.$refs.mesg.ShowerrorFn();
+            }else{
+              this.msg = "红包已过期";
+              this.$refs.mesg.showAnimate(2000);
+              this.enevlBoxShow = false;
+            }
         });
 
       },
@@ -318,6 +341,12 @@ export default {
           this.pkLogId = 0;
           this.pageNum = 1;
           this.pullingUpStatus = false;
+      },
+      replaceGetParent() {
+        this.clearData();
+        // this.active = this.$route.params.spellLevel || 1;
+        this.getDataList();
+        this.loadData();
       }
 
     }

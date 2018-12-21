@@ -45,11 +45,12 @@ class Api extends Base {
    * 获取下一关数据
    * @return {[type]} [description]
    */
-  getNextIdiomList(pkLogId = 0) {
+  getNextIdiomList(roundLevelNow,pkLogId = 0) {
     let param = {
       url: "/customerIndex/game/idiom/getNextIdiomList",
       data: {
-        pkLogId: pkLogId
+        pkLogId: pkLogId,
+        roundLevelNow: roundLevelNow
       },
     }
     return this.request(param);

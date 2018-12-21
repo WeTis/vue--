@@ -148,6 +148,7 @@ export default {
       pkLogId: 0,
       roundLevel:1,   // 关数
       sudioClsoe: false,
+      getSuccess: false,    // 获取是否成功
       
     }
   },
@@ -168,12 +169,6 @@ export default {
                 click: true,
                 scrollY: true,
                 stopPropagation: true,
-                // bounce: {
-                //   top: false,
-                //   bottom: false,
-                //   left: false,
-                //   right: false 
-                // }
               })
             } else {
               this.scroll.refresh()
@@ -185,6 +180,8 @@ export default {
   },
   methods: {
     getData() {
+       this.msg = "正在获取数据";
+       this.$refs.mesg.showAnimate();
        api.getGameData(this.$route.params.spellLevel,this.pkLogId)
        .then((res) => {
         let data = res.params
@@ -200,9 +197,22 @@ export default {
         this.setDataTrue(data.idiomList);
         // 解释
         this.idiomList.push(...data.idiomList);
+        console.log(data.idiomList.length);
+        // if(data.idiomList.length != 4 || data.idiomList.length != 6 || data.idiomList.length !=  9 ) {
+        //    this.$refs.mesg.hideAnimate();
+        //    this.$refs.mesg.ShowerrorFn();
+        //  }else{
+        //    this.$refs.mesg.hideAnimate();
+        //    this.$refs.mesg.hideerrorFn();
+        // }
+        this.$refs.mesg.hideAnimate();
+           this.$refs.mesg.hideerrorFn();
        })
-       .catch(()=>{
-         this.getData();
+       .catch((err)=>{
+
+          this.$refs.mesg.hideAnimate();
+          this.$refs.mesg.ShowerrorFn();
+         
        });
        
     },
@@ -349,6 +359,7 @@ export default {
       this.getRewardNum();
     },
     exitGameBtn(){
+      clearInterval(this.timer);
       this.$router.push('/start');
     },
     cancelExit(){
@@ -377,37 +388,56 @@ export default {
     },
     clickIntoNext() {
       // 下一关
+     if(this.getSuccess){
       this.claerAllData();   // 重置data中的数据
       this.judgeLevel();  // 判断等级
       this.setNextData(this.nextData)   // 获取数据
+     }else{
+        this.msg = "正在获取数据";
+        this.$refs.mesg.showAnimate();
+     }
     },
     setNextData(res) {
-        if(res.params.idiomList.length > 0){
-          let data = res.params
-          this.setData(data.idiomCharArray);
-          this.time = data.limitTime;
-          this.roundLevel = data.roundLevel;
-          // 设置输入框
-          let len = data.idiomCount;
-          for(let i = 0; i < len; i++){
-           this.idiomText.set(i+1,[]);
-          }
-          // 设置正确答案
-          this.setDataTrue(data.idiomList);
-          // 解释
-          this.idiomList.push(...data.idiomList);
-        }else{
-          this.msg = "正在获取数据";
-          this.$refs.mesg.showAnimate();
-          setNextData(this.nextData);
+        
+        let data = res.params
+        this.setData(data.idiomCharArray);
+        this.time = data.limitTime;
+        this.roundLevel = data.roundLevel;
+        // 设置输入框
+        let len = data.idiomCount;
+        for(let i = 0; i < len; i++){
+         this.idiomText.set(i+1,[]);
         }
+        // 设置正确答案
+        this.setDataTrue(data.idiomList);
+        // 解释
+        this.idiomList.push(...data.idiomList);
+     
         
     },
     getNextData() {
-      api.getNextIdiomList(this.pkLogId).then((res) => {
+      this.getSuccess = false;
+      api.getNextIdiomList(this.roundLevel,this.pkLogId).then((res) => {
+
         this.nextData = res;
-      }).catch(()=>{
-        this.getNextData();
+        
+        // if(data.idiomList.length != 4 || data.idiomList.length != 6 || data.idiomList.length !=  9 ) {
+        //    this.$refs.mesg.hideAnimate();
+        //    this.$refs.mesg.ShowerrorFn();
+        //    this.getSuccess = false;
+        //  }else{
+        //    this.$refs.mesg.hideAnimate();
+        //    this.$refs.mesg.hideerrorFn();
+        //    this.getSuccess = true;
+        // }
+        this.$refs.mesg.hideAnimate();
+           this.$refs.mesg.hideerrorFn();
+           this.getSuccess = true;
+      }).catch((err)=>{
+          this.$refs.mesg.hideAnimate();
+          this.msg = "正在获取数据";
+          this.$refs.mesg.ShowerrorFn(1);
+   
        });
     },
     claerAllData() {
@@ -430,28 +460,39 @@ export default {
       this.trueNum = 0;  // 正确数量
     },
     gameOverApi() {
+      this.gameOverShow = true;
+
       api.setFinishGame(this.pkLogId).then((res) => {
-         console.log(res.params.rewardStatus);
         if(res.params.rewardStatus == 1){
           // 有奖励
           this.enevlBoxShow = true;
-        }else{
-          // 无奖励
-          this.gameOverShow = true;
         }
       }).catch(() => {
          this.gameOverShow = true;
       })
+
     },
     getRewardNum() {
       // 获取红包金额
+      this.$refs.mesg.hideAnimate();
+      this.msg = "正在获取红包";
+      this.$refs.mesg.showAnimate();
       api.getReward(this.pkLogId).then((res) => {
           this.rewardNum = res.params.rewardAmount;
           this.isShowAnmate = true;
+          this.$refs.mesg.hideAnimate();
+          this.$refs.mesg.hideerrorFn();
       }).catch((res) => {
-         this.msg = res.message || "红包失效";
-         this.$refs.mesg.showAnimate();
-         this.enevlBoxShow = false;
+
+         this.$refs.mesg.hideAnimate();
+         if(res == "timeOut"){
+            this.$refs.mesg.ShowerrorFn(3);
+         }else{
+           this.msg = res.message || "红包失效";
+           this.$refs.mesg.showAnimate();
+           this.enevlBoxShow = false;
+           this.gameOverShow = true;
+         }
       })
     },
     gameOverShowByenevlBox() {
@@ -459,14 +500,20 @@ export default {
       this.gameOverShow = true;
     },
     exitGameBtnByGameSuccess() {
+
+      this.msg = "正在退出游戏";
+      this.$refs.mesg.showAnimate();
+
       api.setFinishGame(this.pkLogId).then((res) => {
          this.exitGameBtn();
+         this.$refs.mesg.hideAnimate();
+         this.$refs.mesg.hideerrorFn();
       }).catch(() => {
-         this.msg = "游戏结束失败";
-         this.$refs.mesg.showAnimate();
-         setTimeout(()=>{
-          this.exitGameBtn();
-         },300);
+
+         this.$refs.mesg.hideAnimate();
+         this.exitGameBtn();
+         
+
       });
     },
     clickAudio(){
@@ -502,6 +549,34 @@ export default {
     },
     openSudioFn(){
       this.sudioClsoe = false;
+    },
+    replaceGetParent(){
+      this.pkLogId = 0;
+      this.roundLevel = 1;
+      this.rewardNum = 0;
+      this.nextData = {};
+      clearInterval(this.timer);
+      this.claerAllData();
+      this.pkLogId = this.$route.params.pkLogId || 0;
+      this.judgeLevel();  // 判断等级
+      this.getData();   // 获取数据
+      this.$nextTick(() => {
+        if (!this.scroll) {
+          this.scroll = new Bscroll(this.$refs.listS, {
+            click: true,
+            scrollY: true,
+            stopPropagation: true,
+          })
+        } else {
+          this.scroll.refresh()
+        }
+      })
+    },
+    replacegetNextData() {
+        this.getNextData();
+    },
+    replacegetRewardNum() {
+      this.getRewardNum();
     }
 
   },

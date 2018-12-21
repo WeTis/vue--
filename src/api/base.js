@@ -23,7 +23,7 @@ class Base {
         type:param.type,
         data:param.data,
         dataType: "json",
-        timeout: 10000,
+        timeout: 2000,
         success: (res) => {
           if(res.status == 900000){
             resolve(res);
@@ -36,7 +36,7 @@ class Base {
           reject(err);
         },
         error: () => {
-          reject();
+          reject("timeOut");
           console.log("chaoshi");
         }
        })

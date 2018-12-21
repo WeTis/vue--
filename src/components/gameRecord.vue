@@ -96,10 +96,17 @@ export default {
               console.log(arr);
               this.gameRecordList.push(...arr);
               this.$refs.mesg.hideAnimate();
-            }).catch(() => {
-               console.log("获取失败");
-               this.msg = "获取失败,请返回重试";
-               this.$refs.mesg.showAnimate(5000);
+              this.$refs.mesg.hideerrorFn();
+            }).catch((err) => {
+
+               this.$refs.mesg.hideAnimate();
+
+               if(err == "timeOut"){
+                this.$refs.mesg.ShowerrorFn();
+               }else{
+                this.msg = "获取失败,请返回重试";
+                this.$refs.mesg.showAnimate(5000);
+               }
             })
         },
         changeTime(time) {
@@ -111,6 +118,27 @@ export default {
             let m = date.getMinutes() + ':';
             let s = date.getSeconds();
             return Y+M+D+h+m+s;
+        },
+        replaceGetParent(){
+            this.gameRecordList = [];
+            this.gameRecordListData();
+            this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new Bscroll(this.$refs.wrapperG, {
+                click: true,
+                scrollY: true,
+                stopPropagation: true,
+                bounce: {
+                  top: false,
+                  bottom: false,
+                  left: false,
+                  right: false 
+                }
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
         }
     }
 }
