@@ -458,6 +458,7 @@ export default {
       this.explainListShow = false;
       this.enevlBoxShow = false;
       this.trueNum = 0;  // 正确数量
+      this.pkLogId = 0;
     },
     gameOverApi() {
       this.gameOverShow = true;

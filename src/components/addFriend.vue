@@ -81,7 +81,7 @@ export default {
             this.friendList.push(...data);
           }).catch((res) => {
             this.msg = res.message;
-            this.$refs.mesg.showAnimate();
+            this.$refs.mesg.showAnimate(500);
           });
         },
         addFrinedsTogame(id){
@@ -94,7 +94,7 @@ export default {
              });
           }).catch((res) => {
              this.msg = res.message;
-             this.$refs.mesg.showAnimate();
+             this.$refs.mesg.showAnimate(500);
           });
         },
         clickReturn(){
@@ -110,7 +110,7 @@ export default {
                  this.friendList.push(data);
             }).catch((res) => {
                this.msg = res.message;
-               this.$refs.mesg.showAnimate();
+               this.$refs.mesg.showAnimate(500);
             })
         },
         clear() {

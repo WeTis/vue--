@@ -1,7 +1,7 @@
 <template>
   <div id="mesg">
-     <div class="mesg" v-show="showHide">
-       {{msg}}
+    <div class="mesg" v-show="showHide">
+       <span>{{msg}}</span>
      </div>
      <div class="error" v-show="Showerror">
        <div class="imgbox">
@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     showAnimate(time) {
-      let times = time || 1000;
+      let times = time || 20000;
       clearTimeout(this.timer);
       this.showHide = true;
       this.timer = setTimeout(() => {
@@ -136,18 +136,29 @@ export default {
   }
   .mesg{
     position: fixed;
-    font-size: 12px;
-    width:  200px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    border-radius: 5px;
-    background-color: rgba(0,0,0,0.5);
-    color: #ffffff;
-    top: 50%;
-    left: 50%;
-    margin-top: -15px;
-    margin-left: -100px;
+    width: 100%;
+    top: 0;
+    bottom:0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     z-index: 9999999999;
+    text-align: center;
+    >span{
+      display: inline-block;
+      width:  auto;
+      padding: 0 10px;
+      max-width: 100%;
+      box-sizing: border-box;
+      min-height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 5px;
+      background-color: rgba(0,0,0,0.5);
+      color: #ffffff;
+      font-size: 12px;
+    }
   }
 </style>

@@ -64,7 +64,7 @@ new Vue({
     }
   },
   created(){
-    // Config.headers.Authorization = this.hrefParam("Authorization").split('#/')[0];
+    Config.headers.Authorization = this.hrefParam("Authorization").split('#/')[0];
     this.$router.push('/load');
     this.compterHtmlSize();
     this.listenScreenZoom();
