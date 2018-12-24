@@ -8,11 +8,15 @@ npm install
 ### Compiles and hot-reloads for development
 ```
 npm run serve
+或者
+yarn serve
 ```
 
 ### Compiles and minifies for production
 ```
 npm run build
+或者
+yarn build
 ```
 
 ### Run your tests
